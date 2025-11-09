@@ -1,19 +1,6 @@
-// import Footer from "./landingPage/Footer";
-// import NavBar from "./landingPage/NavBar";
 
 import Layout from "./landingPage/layout";
 
-
-// export default function Layout({ children } : { children: React.ReactNode}){
-//     return (
-//         <div>
-//             <NavBar/>
-//             <main> {children} </main>
-//             <Footer/>
-//         </div>
-
-//     );
-// }
 
 interface AppLayoutProps {
   children: React.ReactNode;
