@@ -1,13 +1,27 @@
+// lib/db/index.ts
 import 'dotenv/config';
 import { Pool } from 'pg';
 import { drizzle } from 'drizzle-orm/node-postgres';
+import * as schema from './schema';
 
-// Create a pg Pool and pass it to Drizzle's node-postgres adapter.
-// Passing the connection string directly to drizzle is incorrect for the
-// node-postgres adapter; drizzle expects a Pool or Client instance.
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+console.log("🗄️  Initialisation Drizzle");
+console.log("  🔗 DATABASE_URL:", process.env.DATABASE_URL ? "✅ Défini" : "❌ Manquant");
 
-const db = drizzle(pool);
+const pool = new Pool({ 
+  connectionString: process.env.DATABASE_URL 
+});
+
+// Test de connexion
+pool.query('SELECT NOW()')
+  .then(() => console.log("  ✅ Connexion PostgreSQL réussie"))
+  .catch((err) => console.error("  ❌ Erreur connexion PostgreSQL:", err.message));
+
+const db = drizzle(pool, { schema });
+
+console.log("  📦 Drizzle configuré avec:", Object.keys(schema).length, "tables");
+console.log("  📋 Tables:", Object.keys(schema).join(", "));
+console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
 
 export { pool };
 export default db;

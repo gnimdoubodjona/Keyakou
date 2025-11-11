@@ -16,8 +16,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Keyakou",
-  description: "Marketplace de ventes de vetements",
+  title: "CodeLLenge",
+  description: "Dev challenges platform",
 };
 
 export default function RootLayout({
