@@ -39,16 +39,14 @@ export default function DashboardLayout({
     <div className="min-h-screen bg-black">
       <Sidebar isOpen={sidebarOpen} />
       <DashboardNavbar isOpen={sidebarOpen} toggleSidebar={toggleSidebar} />
-      
+
       <main
-        className={`transition-all duration-300 pt-20 ${
-          sidebarOpen ? "ml-64" : "ml-20"
-        }`}
+        className={`transition-all duration-300 pt-20 ${sidebarOpen ? "ml-72" : "ml-20"
+          }`}
       >
-        <div className="p-6">
-          {children}
-        </div>
+        <div className="p-6">{children}</div>
       </main>
+
     </div>
   );
 }
