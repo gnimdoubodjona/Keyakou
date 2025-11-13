@@ -64,10 +64,13 @@ export default function Sidebar({ isOpen }: SidebarProps) {
         </div>
 
         {/* Logout */}
-        <div className="absolute bottom-6 left-3 right-3">
-          <button className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-400 hover:bg-red-900/20 hover:text-red-400 transition-all duration-200">
-            <FontAwesomeIcon icon={faSignOutAlt} className="w-5 h-5" />
-            {isOpen && <span className="font-medium text-sm">Déconnexion</span>}
+       <div className="absolute bottom-6 left-3 right-3">
+          <div className="mb-3 px-2">
+            <div className="h-px bg-gradient-to-r from-transparent via-gray-700 to-transparent"></div>
+          </div>
+          <button className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500 hover:text-white hover:border-red-500 transition-all duration-200 group">
+            <FontAwesomeIcon icon={faSignOutAlt} className="w-5 h-5 group-hover:translate-x-0.5 transition-transform" />
+            {isOpen && <span className="font-semibold text-sm">Déconnexion</span>}
           </button>
         </div>
       </nav>

@@ -35,31 +35,24 @@ import { faUsers, faTrophy, faChartLine, faDollarSign } from "@fortawesome/free-
 
 export default function DashboardPage() {
   const stats = [
-    { 
-      icon: faUsers, 
-      label: "UTILISATEURS", 
-      value: "247", 
-      change: "+12% ce mois",
-      bgColor: "bg-green-500"
-    },
-    { 
-      icon: faChartLine, 
-      label: "SCORE MOYEN", 
-      value: "8", 
+    {
+      icon: faChartLine,
+      label: "SCORE MOYEN",
+      value: "8",
       change: "+0.3 ce mois",
       bgColor: "bg-orange-500"
     },
-    { 
-      icon: faTrophy, 
-      label: "CHALLENGES", 
-      value: "89", 
+    {
+      icon: faTrophy,
+      label: "CHALLENGES",
+      value: "89",
       change: "+23% ce mois",
       bgColor: "bg-blue-500"
     },
-    { 
-      icon: faDollarSign, 
-      label: "CANDIDATS", 
-      value: "156", 
+    {
+      icon: faDollarSign,
+      label: "CANDIDATS",
+      value: "156",
       change: "+8% ce mois",
       bgColor: "bg-red-500"
     },
@@ -70,15 +63,16 @@ export default function DashboardPage() {
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-white mb-2">
-          CV Analytics Dashboard
+          Challenges Analytics Dashboard
         </h1>
         <p className="text-gray-400">
-          Vue d'ensemble de vos analyses de CV
+          Vue d'ensemble de votre activité sur CodeLLenge
         </p>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
         {stats.map((stat, index) => (
           <div
             key={index}
@@ -101,6 +95,7 @@ export default function DashboardPage() {
           </div>
         ))}
       </div>
+
 
       {/* Charts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
