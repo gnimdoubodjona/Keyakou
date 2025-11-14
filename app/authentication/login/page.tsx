@@ -1,4 +1,4 @@
-"use client";
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub, faGoogle } from '@fortawesome/free-brands-svg-icons';
 import { authClient } from '@/lib/client';

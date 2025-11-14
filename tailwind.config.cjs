@@ -21,6 +21,12 @@ module.exports = {
           DEFAULT: "hsl(var(--primary))",
           "foreground": "hsl(var(--primary-foreground))",
         },
+
+        fontFamily: {
+          sans: ['var(--font-space)', 'system-ui', 'sans-serif'],
+          mono: ['var(--font-mono)', 'monospace'],
+        },
+
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
           "foreground": "hsl(var(--secondary-foreground))",

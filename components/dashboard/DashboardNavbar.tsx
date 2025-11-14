@@ -72,13 +72,13 @@ export default function DashboardNavbar({ isOpen, toggleSidebar }: DashboardNavb
           {/* Profile avec dropdown */}
           <div className="relative group">
             <div className="flex items-center gap-3 cursor-pointer">
-              <div className="text-right hidden sm:block">
+              {/* <div className="text-right hidden sm:block">
                 <p className="text-sm font-semibold text-white">John Doe</p>
                 <div className="flex items-center gap-1">
                   <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
                   <p className="text-xs text-gray-400">En ligne</p>
                 </div>
-              </div>
+              </div> */}
               <div className="relative">
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full blur-md opacity-50 group-hover:opacity-100 transition-opacity"></div>
                 <div className="relative w-11 h-11 rounded-full bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 flex items-center justify-center text-white font-bold ring-2 ring-gray-800 group-hover:ring-blue-500 transition-all p-0.5">
@@ -90,7 +90,7 @@ export default function DashboardNavbar({ isOpen, toggleSidebar }: DashboardNavb
             </div>
 
             {/* Dropdown Menu amélioré */}
-            <div className="absolute right-0 top-full mt-3 w-64 bg-[#0f0f0f] border border-gray-800 rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 overflow-hidden">
+            <div className="absolute right-0 top-full mt-3 w-84 bg-[#0f0f0f] border border-gray-800 rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5"></div>
 
               <div className="relative p-4 border-b border-gray-800">

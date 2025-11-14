@@ -5,12 +5,19 @@ import "./globals.css";
 import Layout from "@/components/layout";
 import { ThemeProvider } from "next-themes";
 import { Advent_Pro } from "next/font/google";
+import { Space_Grotesk , JetBrains_Mono } from "next/font/google";
 
 
-const adventPro = Advent_Pro({
-  subsets: ["latin"],
-  weight: ["100", "200", "300", "400", "500", "600", "700"], // tous les poids dispo
-  variable: "--font-advent-pro",
+// police par titres/textes
+const spaceGrotesk = Space_Grotesk({ 
+  subsets: ['latin'],
+  variable: '--font-space-grotesk',
+});
+
+// Police monospace pour le code/chiffres
+const jetbrainsMono = JetBrains_Mono({ 
+  subsets: ['latin'],
+  variable: '--font-jetbrains',
 });
 
 export const metadata: Metadata = {
@@ -25,7 +32,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={adventPro.variable}>
+      <body lang="fr" className={`${spaceGrotesk.variable} ${jetbrainsMono.variable}`}>
         {/* ✅ ThemeProvider peut rester ici mais tu dois le configurer proprement */}
         <ThemeProvider
           attribute="class"
