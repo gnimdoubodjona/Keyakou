@@ -12,6 +12,7 @@ import {
   faRobot,
   faChevronDown,
 } from "@fortawesome/free-solid-svg-icons";
+import LogoutButton from "../LogoutButton";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -180,14 +181,7 @@ export default function Sidebar({ isOpen }: SidebarProps) {
 
         {/* Logout stylisé */}
         <div className="mt-6">
-          <div className="mb-4 px-2">
-            <div className="h-px bg-gradient-to-r from-transparent via-gray-700 to-transparent"></div>
-          </div>
-          <button className="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl bg-gradient-to-r from-red-500/10 to-pink-500/10 border border-red-500/30 text-red-400 hover:from-red-500 hover:to-pink-500 hover:text-white hover:border-red-500 transition-all duration-300 group relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-r from-red-500 to-pink-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            <FontAwesomeIcon icon={faSignOutAlt} className="w-5 h-5 relative z-10 group-hover:rotate-12 transition-transform" />
-            {isOpen && <span className="font-semibold text-sm relative z-10">Déconnexion</span>}
-          </button>
+          {isOpen ? <LogoutButton /> : null}
         </div>
       </nav>
     </aside>

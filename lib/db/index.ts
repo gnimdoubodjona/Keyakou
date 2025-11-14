@@ -3,9 +3,9 @@ import { Pool } from 'pg';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import * as schema from './schema';
 
-console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-console.log("🗄️  Initialisation Drizzle");
-console.log("  🔗 DATABASE_URL:", process.env.DATABASE_URL ? "✅ Défini" : "❌ Manquant");
+// console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+// console.log("🗄️  Initialisation Drizzle");
+// console.log("  🔗 DATABASE_URL:", process.env.DATABASE_URL ? "✅ Défini" : "❌ Manquant");
 
 const pool = new Pool({ 
   connectionString: process.env.DATABASE_URL 
@@ -18,9 +18,9 @@ pool.query('SELECT NOW()')
 
 const db = drizzle(pool, { schema });
 
-console.log("  📦 Drizzle configuré avec:", Object.keys(schema).length, "tables");
-console.log("  📋 Tables:", Object.keys(schema).join(", "));
-console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+// console.log("  📦 Drizzle configuré avec:", Object.keys(schema).length, "tables");
+// console.log("  📋 Tables:", Object.keys(schema).join(", "));
+// console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
 
 export { pool };
 export default db;

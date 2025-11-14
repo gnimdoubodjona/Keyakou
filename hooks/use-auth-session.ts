@@ -20,11 +20,17 @@ export function useAuthSession() {
         const response = await fetch("/api/auth/get-session");
         const data = await response.json();
         
-        if (data.data?.user) {
-          setUser(data.data.user);
+        // console.log("📦 Réponse complète de l'API:", data);
+        // console.log("👤 User trouvé?:", data.user); // ← Changé ici
+        
+       
+        if (data.user) {
+          setUser(data.user);
+        } else {
+          console.log("❌ Pas de user dans data.user");
         }
       } catch (error) {
-        console.error("Erreur session:", error);
+        console.error("❌ Erreur session:", error);
       } finally {
         setLoading(false);
       }

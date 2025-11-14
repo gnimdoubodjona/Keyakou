@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faTimes, faBell, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { useAuthSession } from "@/hooks/use-auth-session";
 import Image from "next/image";
+import LogoutButton from "../LogoutButton";
 
 interface DashboardNavbarProps {
   isOpen: boolean;
@@ -87,7 +88,7 @@ export default function DashboardNavbar({ isOpen, toggleSidebar }: DashboardNavb
                 <div className="relative">
                   <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full blur-md opacity-50 group-hover:opacity-100 transition-opacity"></div>
                   {user.image ? (
-                    <div className="relative w-11 h-11 rounded-full ring-2 ring-gray-800 group-hover:ring-blue-500 transition-all overflow-hidden">
+                    <div className="relative w-11 h-11 rounded-full ring-2 ring-white group-hover:ring-white transition-all overflow-hidden">
                       <Image
                         src={user.image}
                         alt={user.name}
@@ -123,7 +124,7 @@ export default function DashboardNavbar({ isOpen, toggleSidebar }: DashboardNavb
                 <div className="relative p-4 border-b border-gray-800">
                   <div className="flex items-center gap-3">
                     {user.image ? (
-                      <div className="w-12 h-12 rounded-full overflow-hidden ring-2 ring-blue-500/30">
+                      <div className="w-12 h-12 rounded-full overflow-hidden ring-2 ring-white">
                         <Image
                           src={user.image}
                           alt={user.name}
@@ -169,23 +170,12 @@ export default function DashboardNavbar({ isOpen, toggleSidebar }: DashboardNavb
                 </div>
 
                 <div className="relative border-t border-gray-800 py-2">
-                  <button 
-                    onClick={async () => {
-                      await fetch("/api/auth/sign-out", { method: "POST" });
-                      window.location.reload();
-                    }}
-                    className="w-full px-4 py-3 text-left text-sm text-red-400 hover:bg-gradient-to-r hover:from-red-500/20 hover:to-pink-500/20 transition-all flex items-center gap-3 group/item"
-                  >
-                    <div className="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center group-hover/item:bg-red-500 transition-colors">
-                      <svg className="w-4 h-4 text-red-400 group-hover/item:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                      </svg>
-                    </div>
-                    <span className="font-semibold">Déconnexion</span>
-                  </button>
+                  <LogoutButton />  {/* ← Utilise ton composant ici */}
                 </div>
               </div>
             )}
+
+
           </div>
         </div>
       </div>
