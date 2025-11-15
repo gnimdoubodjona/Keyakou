@@ -1,5 +1,3 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faGithub, faGoogle } from '@fortawesome/free-brands-svg-icons';
 import { authClient } from '@/lib/client';
 import { headers } from 'next/headers';
 import { auth } from '@/lib/auth';

@@ -1,11 +1,12 @@
 // components/dashboard/DashboardNavbar.tsx
 "use client";
 import React from "react";
+import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faTimes, faBell, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { useAuthSession } from "@/hooks/use-auth-session";
 import Image from "next/image";
-import LogoutButton from "../LogoutButton";
+import LogoutButton from "../auth/LogoutButton";
 
 interface DashboardNavbarProps {
   isOpen: boolean;
@@ -157,14 +158,14 @@ export default function DashboardNavbar({ isOpen, toggleSidebar }: DashboardNavb
 
                 {/* Reste du dropdown menu inchangé */}
                 <div className="relative py-2">
-                  <button className="w-full px-4 py-3 text-left text-sm text-gray-300 hover:bg-gradient-to-r hover:from-blue-500/10 hover:to-purple-500/10 transition-all flex items-center gap-3 group/item">
+                  <Link href="/dashboard/profile" className="w-full px-4 py-3 text-left text-sm text-gray-300 hover:bg-gradient-to-r hover:from-blue-500/10 hover:to-purple-500/10 transition-all flex items-center gap-3 group/item">
                     <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center group-hover/item:bg-blue-500 transition-colors">
                       <svg className="w-4 h-4 text-blue-400 group-hover/item:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                       </svg>
                     </div>
                     <span className="font-medium">Mon profil</span>
-                  </button>
+                  </Link>
 
                   {/* ... autres boutons du dropdown ... */}
                 </div>

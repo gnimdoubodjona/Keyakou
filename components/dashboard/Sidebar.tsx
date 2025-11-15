@@ -12,7 +12,7 @@ import {
   faRobot,
   faChevronDown,
 } from "@fortawesome/free-solid-svg-icons";
-import LogoutButton from "../LogoutButton";
+import LogoutButton from "../auth/LogoutButton";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -34,8 +34,6 @@ export default function Sidebar({ isOpen }: SidebarProps) {
       active: false, 
       gradient: "from-yellow-500 to-orange-500",
       submenu: [
-        { label: "Tous les challenges", href: "/challenges" },
-        { label: "Mes challenges", href: "/challenges/mes-challenges" },
         { label: "Créer un challenge", href: "/challenges/create" },
       ]
     },
@@ -166,7 +164,7 @@ export default function Sidebar({ isOpen }: SidebarProps) {
         </div>
 
         {/* Stats rapides */}
-        {isOpen && (
+        {/* {isOpen && (
           <div className="mt-4 p-4 bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-xl border border-blue-500/20">
             <p className="text-xs text-gray-400 font-medium mb-2">Ton niveau</p>
             <div className="flex items-center gap-2 mb-2">
@@ -177,7 +175,7 @@ export default function Sidebar({ isOpen }: SidebarProps) {
             </div>
             <p className="text-xs text-gray-500">Niveau 12 • 250 XP restant</p>
           </div>
-        )}
+        )} */}
 
         {/* Logout stylisé */}
         <div className="mt-6">
