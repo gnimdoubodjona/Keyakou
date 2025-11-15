@@ -1,4 +1,3 @@
-// lib/db/schema.ts
 import { pgTable, text, timestamp, boolean } from "drizzle-orm/pg-core";
 
 // Tables EXACTES pour Better Auth
