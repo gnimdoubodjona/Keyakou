@@ -41,9 +41,9 @@ export default function DashboardPage() {
     <div className="max-w-7xl mx-auto">
       {/* Header avec gradient */}
       <div className="mb-8 relative">
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-pink-500/10 rounded-2xl blur-3xl"></div>
+        <div className="absolute inset-0 bg-white from-blue-500/10 via-purple-500/10 to-pink-500/10 rounded-2xl blur-3xl"></div>
         <div className="relative">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent mb-2">
+          <h1 className="text-4xl font-bold bg-white from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent mb-2">
             Challenges Analytics Dashboard
           </h1>
           <p className="text-gray-400">
@@ -150,7 +150,7 @@ export default function DashboardPage() {
                   </div>
                   <div className="h-2 bg-gray-800 rounded-full overflow-hidden mt-3">
                     <div
-                      className="h-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-full transition-all"
+                      className="h-full bg-white from-blue-500 to-purple-500 rounded-full transition-all"
                       style={{ width: `${challenge.score}%` }}
                     ></div>
                   </div>

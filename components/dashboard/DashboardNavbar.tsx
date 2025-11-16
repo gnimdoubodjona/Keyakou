@@ -28,7 +28,7 @@ export default function DashboardNavbar({ isOpen, toggleSidebar }: DashboardNavb
 
   return (
     <header
-      className={`h-20 fixed top-0 z-30 transition-all duration-300 backdrop-blur-xl border-b border-gray-800 bg-gradient-to-r from-[#0a0a0a] via-[#1a1a1a] to-[#0a0a0a]
+      className={`h-20 fixed top-0 z-30 transition-all duration-300 backdrop-blur-xl border-b border-white bg-black from-[#0a0a0a] via-[#1a1a1a] to-[#0a0a0a]
         ${isOpen ? "left-72" : "left-20"} right-0`}
     >
       <div className="h-full px-6 flex items-center justify-between">
@@ -36,7 +36,7 @@ export default function DashboardNavbar({ isOpen, toggleSidebar }: DashboardNavb
         <div className="flex items-center gap-4">
           <button
             onClick={toggleSidebar}
-            className="p-2.5 rounded-xl hover:bg-gradient-to-r hover:from-blue-500/20 hover:to-purple-500/20 transition-all text-gray-400 hover:text-white border border-transparent hover:border-blue-500/30"
+            className="p-2.5 rounded-xl hover:bg-gray-800 hover:from-blue-500/20 hover:to-purple-500/20 transition-all text-white hover:text-white border border-transparent hover:border-white"
           >
             <FontAwesomeIcon
               icon={isOpen ? faTimes : faBars}
@@ -46,15 +46,15 @@ export default function DashboardNavbar({ isOpen, toggleSidebar }: DashboardNavb
 
           {/* Search Bar */}
           <div className="relative hidden md:block group">
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl blur-xl opacity-0 group-hover:opacity-20 transition-opacity"></div>
+            <div className="absolute inset-0 bg-white  rounded-xl blur-xl opacity-0 group-hover:opacity-20 transition-opacity"></div>
             <FontAwesomeIcon
               icon={faSearch}
-              className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500 group-hover:text-blue-400 w-4 h-4 transition-colors z-10"
+              className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white group-hover:text-white w-4 h-4 transition-colors z-10"
             />
             <input
               type="text"
               placeholder="Rechercher un challenge..."
-              className="relative pl-11 pr-4 py-3 w-96 bg-[#0f0f0f] border border-gray-800 rounded-xl text-gray-300 placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:bg-black transition-all"
+              className="relative pl-11 pr-4 py-3 w-96 bg-[#0f0f0f] border border-white rounded-xl text-white placeholder-white focus:outline-none focus:border-white focus:bg-black transition-all"
             />
           </div>
         </div>
@@ -62,7 +62,7 @@ export default function DashboardNavbar({ isOpen, toggleSidebar }: DashboardNavb
         {/* Right */}
         <div className="flex items-center gap-4">
           {/* Notifications */}
-          <button className="relative p-2.5 rounded-xl hover:bg-gradient-to-r hover:from-purple-500/20 hover:to-pink-500/20 transition-all text-gray-400 hover:text-white border border-transparent hover:border-purple-500/30 group">
+          <button className="relative p-2.5 rounded-xl hover:bg-gray-700 hover:from-purple-500/20 hover:to-pink-500/20 transition-all text-white hover:text-white border border-transparent hover:border-white group">
             <FontAwesomeIcon icon={faBell} className="w-5 h-5 group-hover:animate-bounce" />
             <span className="absolute top-1.5 right-1.5 flex h-3 w-3">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
@@ -72,6 +72,8 @@ export default function DashboardNavbar({ isOpen, toggleSidebar }: DashboardNavb
 
           {/* Profile avec vraies données */}
           <div className="relative group">
+            
+            {/* partie avec le nom du user et son état de connexion */}
             {loading ? (
               // Skeleton loading
               <div className="flex items-center gap-3">
@@ -80,11 +82,11 @@ export default function DashboardNavbar({ isOpen, toggleSidebar }: DashboardNavb
             ) : user ? (
               <div className="flex items-center gap-3 cursor-pointer">
                 <div className="text-right hidden sm:block">
-                  <p className="text-sm font-semibold text-white">{user.name}</p>
+                  {/* <p className="text-sm font-semibold text-white">{user.name}</p>
                   <div className="flex items-center gap-1">
                     <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
                     <p className="text-xs text-gray-400">En ligne</p>
-                  </div>
+                  </div> */}
                 </div>
                 <div className="relative">
                   <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full blur-md opacity-50 group-hover:opacity-100 transition-opacity"></div>
@@ -109,7 +111,7 @@ export default function DashboardNavbar({ isOpen, toggleSidebar }: DashboardNavb
               // Non connecté
               <div className="flex items-center gap-3">
                 <div className="text-right hidden sm:block">
-                  <p className="text-sm font-semibold text-gray-400">Non connecté</p>
+                  <p className="text-sm font-semibold text-white">Non connecté</p>
                 </div>
                 <div className="relative w-11 h-11 rounded-full bg-gray-700 flex items-center justify-center text-gray-400 font-bold ring-2 ring-gray-800">
                   ?
@@ -119,10 +121,10 @@ export default function DashboardNavbar({ isOpen, toggleSidebar }: DashboardNavb
 
             {/* Dropdown Menu avec vraies infos */}
             {user && (
-              <div className="absolute right-0 top-full mt-3 w-84 bg-[#0f0f0f] border border-gray-800 rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5"></div>
+              <div className="absolute right-0 top-full mt-3 w-84 bg-[#0f0f0f] border border-white rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 overflow-hidden">
+                <div className="absolute inset-0 bg-black from-blue-500/5 to-purple-500/5"></div>
 
-                <div className="relative p-4 border-b border-gray-800">
+                <div className="relative p-4 border-b border-white">
                   <div className="flex items-center gap-3">
                     {user.image ? (
                       <div className="w-12 h-12 rounded-full overflow-hidden ring-2 ring-white">
@@ -135,7 +137,7 @@ export default function DashboardNavbar({ isOpen, toggleSidebar }: DashboardNavb
                         />
                       </div>
                     ) : (
-                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold">
+                      <div className="w-12 h-12 rounded-full bg-black  flex items-center justify-center text-white font-bold">
                         {getInitials(user.name)}
                       </div>
                     )}
@@ -170,7 +172,7 @@ export default function DashboardNavbar({ isOpen, toggleSidebar }: DashboardNavb
                   {/* ... autres boutons du dropdown ... */}
                 </div>
 
-                <div className="relative border-t border-gray-800 py-2">
+                <div className="relative border-t border-white py-2">
                   <LogoutButton />  {/* ← Utilise ton composant ici */}
                 </div>
               </div>
