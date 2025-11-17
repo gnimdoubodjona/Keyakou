@@ -242,3 +242,7 @@ Cette plateforme servira de base moderne et légère pour :
 
 Quelques petites notes perso
 -autoriser l'affichage d'avatar github dans le next.config.ts
+
+installation de nanoid qui génère des ids plus complexe
+npm install nanoid
+npm install --save-dev @types/nanoid

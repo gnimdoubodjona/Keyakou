@@ -13,6 +13,7 @@ import {
   faChevronDown,
 } from "@fortawesome/free-solid-svg-icons";
 import LogoutButton from "../auth/LogoutButton";
+import Link from "next/link";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -129,8 +130,9 @@ export default function Sidebar({ isOpen }: SidebarProps) {
               {item.submenu && isOpen && openSubmenu === item.label && (
                 <div className="mt-2 space-y-1 overflow-hidden animate-slideDown">
                   {item.submenu.map((subItem, subIndex) => (
-                    <button
+                    <Link
                       key={subIndex}
+                      href={subItem.href}
                       className="w-full text-left pl-14 pr-4 py-2.5 text-gray-400 hover:text-white transition-all text-sm flex items-center gap-3 group relative"
                     >
                       {/* Ligne de connexion subtile */}
@@ -142,7 +144,7 @@ export default function Sidebar({ isOpen }: SidebarProps) {
                       <span className="font-medium group-hover:translate-x-1 transition-transform duration-200">
                         {subItem.label}
                       </span>
-                    </button>
+                    </Link>
                   ))}
                 </div>
               )}

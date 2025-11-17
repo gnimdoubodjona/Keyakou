@@ -1,4 +1,3 @@
-// components/dashboard/DashboardNavbar.tsx
 "use client";
 import React from "react";
 import Link from "next/link";
