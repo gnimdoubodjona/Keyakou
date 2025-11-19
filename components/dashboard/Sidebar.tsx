@@ -11,58 +11,99 @@ import {
   faCode,
   faRobot,
   faChevronDown,
+  faPlus, // ⬅️ AJOUTÉ
 } from "@fortawesome/free-solid-svg-icons";
 import LogoutButton from "../auth/LogoutButton";
 import Link from "next/link";
+import { useAuthSession } from "@/hooks/use-auth-session";
 
 interface SidebarProps {
   isOpen: boolean;
 }
 
+// ⬇️ NOUVELLE INTERFACE POUR LES ITEMS DE MENU
+interface MenuItem {
+  icon: any;
+  label: string;
+  active?: boolean;
+  href?: string;
+  submenu?: { label: string; href: string }[];
+}
+
 export default function Sidebar({ isOpen }: SidebarProps) {
+  const { user, loading } = useAuthSession();
   const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
 
-  const menuItems = [
+  // ⬇️ MENU ITEMS RECONFIGURÉ
+  const baseMenuItems: MenuItem[] = [
     {
       icon: faHome,
       label: "Dashboard",
+      href: "/dashboard",
       active: true,
-      // gradient: "from-blue-500 to-cyan-500" 
     },
     {
       icon: faTrophy,
-      label: "Challenges",
+      label: "Challenges", 
+      href: "/dashboard/challenges",
       active: false,
-      // gradient: "from-yellow-500 to-orange-500",
-      submenu: [
-        { label: "Créer un challenge", href: "/dashboard/creer-challenge" },
-      ]
     },
-
-
     {
       icon: faChartLine,
       label: "Progression",
+      href: "/dashboard/progression", 
       active: false,
-      // gradient: "from-purple-500 to-pink-500" 
     },
-
-
-
   ];
+
+  // ⬇️ MENU ADMIN UNIQUEMENT POUR SUPER_ADMIN
+  const adminMenuItems: MenuItem[] = 
+    user?.role === "super_admin" 
+      ? [
+          {
+            icon: faPlus,
+            label: "Admin",
+            submenu: [
+              { 
+                label: "Créer un challenge", 
+                href: "/dashboard/creer-challenge" 
+              },
+              // Tu peux ajouter d'autres items admin ici
+            ],
+          },
+        ]
+      : [];
+
+  // ⬇️ COMBINAISON DES DEUX MENUS
+  const menuItems = [...baseMenuItems, ...adminMenuItems];
 
   const toggleSubmenu = (label: string) => {
     setOpenSubmenu(openSubmenu === label ? null : label);
   };
 
+  if (loading) {
+    return (
+      <aside
+        className={`fixed left-0 top-0 h-full bg-black border-r border-white transition-all duration-300 z-40 ${
+          isOpen ? "w-72" : "w-20"
+        }`}
+      >
+        <div className="h-20 flex items-center justify-center border-b border-white">
+          {isOpen ? "Chargement..." : "..."}
+        </div>
+      </aside>
+    );
+  }
+
   return (
     <aside
-      className={`fixed left-0 top-0 h-full bg-black from-[#0a0a0a] via-[#1a1a1a] to-[#0a0a0a] border-r border-white transition-all duration-300 z-40 ${isOpen ? "w-72" : "w-20"
-        }`}
+      className={`fixed left-0 top-0 h-full bg-black border-r border-white transition-all duration-300 z-40 ${
+        isOpen ? "w-72" : "w-20"
+      }`}
     >
-      {/* Logo avec effet glow */}
+      {/* Logo - TON CODE EXISTANT */}
       <div className="h-20 flex items-center justify-center border-b border-white px-4 relative">
-        <div className="absolute inset-0  from-blue-500/10 via-purple-500/10 to-pink-500/10"></div>
+        <div className="absolute inset-0 from-blue-500/10 via-purple-500/10 to-pink-500/10"></div>
         {isOpen ? (
           <div className="flex items-center gap-3 relative z-10">
             <div className="relative">
@@ -93,40 +134,77 @@ export default function Sidebar({ isOpen }: SidebarProps) {
         <div className="space-y-2">
           {menuItems.map((item, index) => (
             <div key={index}>
-              <button
-                onClick={() => item.submenu && toggleSubmenu(item.label)}
-                className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 relative group ${item.active
-                  ? "bg-white " + " text-black shadow-lg"
-                  : "text-white hover:text-white hover:bg-white/5"
+              {/* ⬇️ CONDITION POUR LES ITEMS AVEC SOUS-MENU */}
+              {item.submenu ? (
+                // Item AVEC sous-menu
+                <button
+                  onClick={() => toggleSubmenu(item.label)}
+                  className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 relative group ${
+                    item.active
+                      ? "bg-white text-black shadow-lg"
+                      : "text-white hover:text-white hover:bg-white/5"
                   }`}
-              >
-                {item.active && (
-                  <div className={`absolute inset-0 rounded-xl blur-xl opacity-30 -z-10`}></div>
-                )}
-                <div className={`${item.active ? '' : 'group-hover:scale-110 transition-transform'}`}>
-                  <FontAwesomeIcon icon={item.icon} className="w-5 h-5" />
-                </div>
-                {isOpen && (
-                  <>
-                    <span className="font-semibold text-base">{item.label}</span>
-                    {item.submenu && (
+                >
+                  {item.active && (
+                    <div
+                      className={`absolute inset-0 rounded-xl blur-xl opacity-30 -z-10`}
+                    ></div>
+                  )}
+                  <div
+                    className={`${
+                      item.active ? "" : "group-hover:scale-110 transition-transform"
+                    }`}
+                  >
+                    <FontAwesomeIcon icon={item.icon} className="w-5 h-5" />
+                  </div>
+                  {isOpen && (
+                    <>
+                      <span className="font-semibold text-base">{item.label}</span>
                       <FontAwesomeIcon
                         icon={faChevronDown}
-                        className={`w-3 h-3 ml-auto transition-transform duration-200 ${openSubmenu === item.label ? 'rotate-180' : ''
-                          }`}
+                        className={`w-3 h-3 ml-auto transition-transform duration-200 ${
+                          openSubmenu === item.label ? "rotate-180" : ""
+                        }`}
                       />
-                    )}
-                  </>
-                )}
-                {item.active && isOpen && !item.submenu && (
-                  <div className="ml-auto">
-                    <div className="w-2 h-2  rounded-full animate-pulse"></div>
+                    </>
+                  )}
+                </button>
+              ) : (
+                // Item SANS sous-menu (avec lien)
+                <Link
+                  href={item.href || "#"}
+                  className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 relative group ${
+                    item.active
+                      ? "bg-white text-black shadow-lg"
+                      : "text-white hover:text-white hover:bg-white/5"
+                  }`}
+                >
+                  {item.active && (
+                    <div
+                      className={`absolute inset-0 rounded-xl blur-xl opacity-30 -z-10`}
+                    ></div>
+                  )}
+                  <div
+                    className={`${
+                      item.active ? "" : "group-hover:scale-110 transition-transform"
+                    }`}
+                  >
+                    <FontAwesomeIcon icon={item.icon} className="w-5 h-5" />
                   </div>
-                )}
-              </button>
+                  {isOpen && (
+                    <>
+                      <span className="font-semibold text-base">{item.label}</span>
+                      {item.active && (
+                        <div className="ml-auto">
+                          <div className="w-2 h-2 rounded-full animate-pulse"></div>
+                        </div>
+                      )}
+                    </>
+                  )}
+                </Link>
+              )}
 
-              {/* Sous-menu */}
-              {/* Sous-menu - Version vraiment pro */}
+              {/* ⬇️ SOUS-MENU */}
               {item.submenu && isOpen && openSubmenu === item.label && (
                 <div className="mt-2 space-y-1 overflow-hidden animate-slideDown">
                   {item.submenu.map((subItem, subIndex) => (
@@ -157,7 +235,6 @@ export default function Sidebar({ isOpen }: SidebarProps) {
       <div className="mt-6">
         {isOpen ? <LogoutButton /> : null}
       </div>
-
     </aside>
   );
 }

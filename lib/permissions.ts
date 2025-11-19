@@ -1,0 +1,1 @@
+export const CAN_CREATE_CHALLENGE = ["super_admin", "admin"];
