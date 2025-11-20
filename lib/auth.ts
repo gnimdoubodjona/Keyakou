@@ -13,6 +13,16 @@ export const auth = betterAuth({
       clientId: process.env.GITHUB_CLIENT_ID!,
       clientSecret: process.env.GITHUB_CLIENT_SECRET!,
     }
-  }
+  },
+    // ✅ AJOUTE CETTE PARTIE
+  user: {
+    additionalFields: {
+      role: {
+        type: "string",
+        defaultValue: "user",
+        required: false,
+      },
+    },
+  },
 });
 

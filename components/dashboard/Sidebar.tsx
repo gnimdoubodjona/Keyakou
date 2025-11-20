@@ -34,7 +34,8 @@ export default function Sidebar({ isOpen }: SidebarProps) {
   const { user, loading } = useAuthSession();
   const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
 
-  // ⬇️ MENU ITEMS RECONFIGURÉ
+ 
+  // ⬇️ MENU DE BASE POUR TOUT LE MONDE
   const baseMenuItems: MenuItem[] = [
     {
       icon: faHome,
@@ -44,35 +45,55 @@ export default function Sidebar({ isOpen }: SidebarProps) {
     },
     {
       icon: faTrophy,
-      label: "Challenges", 
-      href: "/dashboard/challenges",
+      label: "Challenges",
+      submenu: [
+        {
+          label: "Tous les challenges",
+          href: "/dashboard/liste-challenge"
+        },
+        {
+          label: "Mes challenges",
+          href: "/dashboard/mes-challenges"
+        },
+        // ✅ AJOUTE CONDITIONNELLEMENT "Créer un challenge" si super_admin
+        ...(user?.role === "super_admin"
+          ? [{ label: "Créer un challenge", href: "/dashboard/creer-challenge" }]
+          : []
+        ),
+      ],
       active: false,
     },
     {
       icon: faChartLine,
       label: "Progression",
-      href: "/dashboard/progression", 
+      href: "/dashboard/progression",
       active: false,
     },
   ];
 
-  // ⬇️ MENU ADMIN UNIQUEMENT POUR SUPER_ADMIN
-  const adminMenuItems: MenuItem[] = 
-    user?.role === "super_admin" 
+  // ⬇️ TU PEUX MÊME ENLEVER LE MENU ADMIN SI TU VEUX
+  // Ou le garder pour d'autres options admin
+  const adminMenuItems: MenuItem[] =
+    user?.role === "super_admin"
       ? [
-          {
-            icon: faPlus,
-            label: "Admin",
-            submenu: [
-              { 
-                label: "Créer un challenge", 
-                href: "/dashboard/creer-challenge" 
-              },
-              // Tu peux ajouter d'autres items admin ici
-            ],
-          },
-        ]
+        {
+          icon: faCog,
+          label: "Admin",
+          submenu: [
+            {
+              label: "Gérer les utilisateurs",
+              href: "/dashboard/admin/users"
+            },
+            {
+              label: "Modérer les challenges",
+              href: "/dashboard/admin/moderate"
+            },
+          ],
+        },
+      ]
       : [];
+
+  console.log("📋 Admin menu items:", adminMenuItems); // ← Debug
 
   // ⬇️ COMBINAISON DES DEUX MENUS
   const menuItems = [...baseMenuItems, ...adminMenuItems];
@@ -84,9 +105,8 @@ export default function Sidebar({ isOpen }: SidebarProps) {
   if (loading) {
     return (
       <aside
-        className={`fixed left-0 top-0 h-full bg-black border-r border-white transition-all duration-300 z-40 ${
-          isOpen ? "w-72" : "w-20"
-        }`}
+        className={`fixed left-0 top-0 h-full bg-black border-r border-white transition-all duration-300 z-40 ${isOpen ? "w-72" : "w-20"
+          }`}
       >
         <div className="h-20 flex items-center justify-center border-b border-white">
           {isOpen ? "Chargement..." : "..."}
@@ -97,9 +117,8 @@ export default function Sidebar({ isOpen }: SidebarProps) {
 
   return (
     <aside
-      className={`fixed left-0 top-0 h-full bg-black border-r border-white transition-all duration-300 z-40 ${
-        isOpen ? "w-72" : "w-20"
-      }`}
+      className={`fixed left-0 top-0 h-full bg-black border-r border-white transition-all duration-300 z-40 ${isOpen ? "w-72" : "w-20"
+        }`}
     >
       {/* Logo - TON CODE EXISTANT */}
       <div className="h-20 flex items-center justify-center border-b border-white px-4 relative">
@@ -139,11 +158,10 @@ export default function Sidebar({ isOpen }: SidebarProps) {
                 // Item AVEC sous-menu
                 <button
                   onClick={() => toggleSubmenu(item.label)}
-                  className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 relative group ${
-                    item.active
-                      ? "bg-white text-black shadow-lg"
-                      : "text-white hover:text-white hover:bg-white/5"
-                  }`}
+                  className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 relative group ${item.active
+                    ? "bg-white text-black shadow-lg"
+                    : "text-white hover:text-white hover:bg-white/5"
+                    }`}
                 >
                   {item.active && (
                     <div
@@ -151,9 +169,8 @@ export default function Sidebar({ isOpen }: SidebarProps) {
                     ></div>
                   )}
                   <div
-                    className={`${
-                      item.active ? "" : "group-hover:scale-110 transition-transform"
-                    }`}
+                    className={`${item.active ? "" : "group-hover:scale-110 transition-transform"
+                      }`}
                   >
                     <FontAwesomeIcon icon={item.icon} className="w-5 h-5" />
                   </div>
@@ -162,9 +179,8 @@ export default function Sidebar({ isOpen }: SidebarProps) {
                       <span className="font-semibold text-base">{item.label}</span>
                       <FontAwesomeIcon
                         icon={faChevronDown}
-                        className={`w-3 h-3 ml-auto transition-transform duration-200 ${
-                          openSubmenu === item.label ? "rotate-180" : ""
-                        }`}
+                        className={`w-3 h-3 ml-auto transition-transform duration-200 ${openSubmenu === item.label ? "rotate-180" : ""
+                          }`}
                       />
                     </>
                   )}
@@ -173,11 +189,10 @@ export default function Sidebar({ isOpen }: SidebarProps) {
                 // Item SANS sous-menu (avec lien)
                 <Link
                   href={item.href || "#"}
-                  className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 relative group ${
-                    item.active
-                      ? "bg-white text-black shadow-lg"
-                      : "text-white hover:text-white hover:bg-white/5"
-                  }`}
+                  className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 relative group ${item.active
+                    ? "bg-white text-black shadow-lg"
+                    : "text-white hover:text-white hover:bg-white/5"
+                    }`}
                 >
                   {item.active && (
                     <div
@@ -185,9 +200,8 @@ export default function Sidebar({ isOpen }: SidebarProps) {
                     ></div>
                   )}
                   <div
-                    className={`${
-                      item.active ? "" : "group-hover:scale-110 transition-transform"
-                    }`}
+                    className={`${item.active ? "" : "group-hover:scale-110 transition-transform"
+                      }`}
                   >
                     <FontAwesomeIcon icon={item.icon} className="w-5 h-5" />
                   </div>

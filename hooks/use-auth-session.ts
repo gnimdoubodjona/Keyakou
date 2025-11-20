@@ -7,7 +7,7 @@ interface User {
   id: string;
   name: string;
   email: string;
-  role: string;
+  role: string; // ← Important
   image?: string;
 }
 
@@ -21,14 +21,20 @@ export function useAuthSession() {
         const response = await fetch("/api/auth/get-session");
         const data = await response.json();
         
-        // console.log("📦 Réponse complète de l'API:", data);
-        // console.log("👤 User trouvé?:", data.user); // ← Changé ici
+        console.log("📦 Data reçue:", data);
+        console.log("👤 Role de l'utilisateur:", data.user?.role); // ← Debug
         
-       
         if (data.user) {
-          setUser(data.user);
+          // ✅ IMPORTANT : Assure-toi que le role est bien inclus
+          setUser({
+            id: data.user.id,
+            name: data.user.name,
+            email: data.user.email,
+            role: data.user.role || "user", // ← AJOUTÉ
+            image: data.user.image,
+          });
         } else {
-          console.log("❌ Pas de user dans data.user");
+          console.log("❌ Pas de user");
         }
       } catch (error) {
         console.error("❌ Erreur session:", error);
