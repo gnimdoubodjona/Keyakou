@@ -38,7 +38,7 @@ export async function createChallenge(formData: FormData): Promise<void> {
             nombrePersonne: parseInt(formData.get("nombrePersonne") as string, 10),
             description: formData.get("description") as string,
             regles: formData.get("regles") as string,
-            sujet: formData.get("sujet") as string,
+            // sujet: formData.get("sujet") as string,
             dateDebut: new Date(formData.get("dateDebut") as string),
             dateFin: new Date(formData.get("dateFin") as string),
             statut: "en_attente",

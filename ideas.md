@@ -246,3 +246,5 @@ Quelques petites notes perso
 installation de nanoid qui génère des ids plus complexe
 npm install nanoid
 npm install --save-dev @types/nanoid
+
+installation de "npm install react-hot-toast" pour les notifs
