@@ -41,7 +41,7 @@ export async function createChallenge(formData: FormData): Promise<void> {
             // sujet: formData.get("sujet") as string,
             dateDebut: new Date(formData.get("dateDebut") as string),
             dateFin: new Date(formData.get("dateFin") as string),
-            statut: "en_attente",
+            statut: "en_cours",
             pourcentageVote: 100,
             createdBy: currentUser.id,
         };
