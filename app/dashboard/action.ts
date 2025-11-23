@@ -4,8 +4,10 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import db from "@/lib/db";
 import { challenge, user } from "@/lib/db/schema";
-import { eq } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 import { nanoid } from "nanoid";
+import { date } from "better-auth";
+import { stat } from "fs";
 
 export async function createChallenge(formData: FormData): Promise<void> {
     try {
@@ -55,3 +57,33 @@ export async function createChallenge(formData: FormData): Promise<void> {
         throw error; // Important pour que le client voit l'erreur
     }
 }
+
+export async function getChallenges() {
+    try {
+        const challenges = await db.select({
+            id: challenge.id,
+            titre: challenge.titre,
+            description: challenge.description,
+            dateFin: challenge.dateFin,
+            nombrePersonne: challenge.nombrePersonne,
+
+            dateDebut: challenge.dateDebut,
+            statut: challenge.statut,
+            regles: challenge.regles,
+            pourcentageVote: challenge.pourcentageVote,
+            createdBy: challenge.createdBy,
+            creator: {
+                name: user.name,
+                image: user.image,
+            }
+        })
+            .from(challenge)
+            .leftJoin(user, eq(challenge.createdBy, user.id));
+            //.orderBy(desc(challenge.dateDebut));
+        return challenges;
+    } catch (error) {
+        console.error("❌ Erreur récupération challenges:", error);
+        return [];
+    }
+}
+
