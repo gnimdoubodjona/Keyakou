@@ -195,7 +195,6 @@ export default function ChallengesList() {
                 );
             })}
 
-
             {selectedChallenge && (
                 <ChallengeDetailModal
                     challenge={selectedChallenge}
@@ -203,14 +202,6 @@ export default function ChallengesList() {
                 />
             )}
         </div>
-
-
-
-
     );
-
-
-
-
 }
 

@@ -9,4 +9,5 @@ export interface Challenge {
   dateFin: string;
   createdBy: string;   // id du user ou email selon ta logique
   createdAt: string;   // timestamps
+  statut: string;
 }
