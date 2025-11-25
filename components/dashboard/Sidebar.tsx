@@ -55,6 +55,10 @@ export default function Sidebar({ isOpen }: SidebarProps) {
           label: "Mes challenges",
           href: "/dashboard/mes-challenges"
         },
+        {
+          label: "Serveur Challenge",
+          href: "/dashboard/serveur-challenge"
+        },
         // ✅ AJOUTE CONDITIONNELLEMENT "Créer un challenge" si super_admin
         ...(user?.role === "super_admin"
           ? [{ label: "Créer un challenge", href: "/dashboard/creer-challenge" }]
