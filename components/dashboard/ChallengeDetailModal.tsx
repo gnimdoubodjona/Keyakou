@@ -1,6 +1,7 @@
+// components/dashboard/ChallengeDetailModal.tsx - VERSION AMÉLIORÉE
 "use client";
 import { Challenge } from "@/types/challenge";
-import React from "react";
+import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { 
   faXmark, 
@@ -9,8 +10,12 @@ import {
   faCalendarDays, 
   faBolt,
   faClipboardList,
-  faArrowRight
+  faArrowRight,
+  faCheck,
+  faSpinner
 } from "@fortawesome/free-solid-svg-icons";
+import { rejoindreChallenge } from "@/app/dashboard/action";
+import toast from "react-hot-toast";
 
 export default function ChallengeDetailModal({
   challenge,
@@ -19,7 +24,37 @@ export default function ChallengeDetailModal({
   challenge: Challenge | null;
   onClose: () => void;
 }) {
+  const [isJoining, setIsJoining] = useState(false);
+  
   if (!challenge) return null;
+
+  const handleJoinChallenge = async () => {
+    if (!challenge) return;
+    
+    setIsJoining(true);
+    const loadingToast = toast.loading(`Rejoindre "${challenge.titre}"...`);
+    
+    try {
+      const result = await rejoindreChallenge(challenge.id);
+      
+      toast.dismiss(loadingToast);
+      
+      if (result.success) {
+        toast.success(result.message);
+        // Fermer le modal après un délai
+        setTimeout(() => {
+          onClose();
+        }, 1500);
+      } else {
+        toast.error(result.message);
+      }
+    } catch (error: any) {
+      toast.dismiss(loadingToast);
+      toast.error(error.message || "Erreur lors de la participation");
+    } finally {
+      setIsJoining(false);
+    }
+  };
 
   return (
     <div
@@ -118,17 +153,40 @@ export default function ChallengeDetailModal({
         <div className="flex gap-2 justify-end">
           <button
             onClick={onClose}
-            className="px-4 py-2 bg-gray-800 text-white rounded-xl hover:bg-gray-700 transition-colors font-semibold font-sans text-sm"
+            disabled={isJoining}
+            className="px-4 py-2 bg-gray-800 text-white rounded-xl hover:bg-gray-700 transition-colors font-semibold font-sans text-sm disabled:opacity-50"
           >
             Fermer
           </button>
           <button
-            className="px-4 py-2 bg-white text-black rounded-xl hover:bg-gray-200 transition-colors font-semibold font-sans text-sm flex items-center gap-2"
+            onClick={handleJoinChallenge}
+            disabled={isJoining || challenge.statut !== 'en_cours'}
+            className="px-4 py-2 bg-white text-black rounded-xl hover:bg-gray-200 transition-colors font-semibold font-sans text-sm flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Rejoindre
-            <FontAwesomeIcon icon={faArrowRight} className="w-3 h-3" />
+            {isJoining ? (
+              <>
+                <FontAwesomeIcon icon={faSpinner} className="w-3 h-3 animate-spin" />
+                Rejoindre...
+              </>
+            ) : (
+              <>
+                Rejoindre
+                <FontAwesomeIcon icon={faArrowRight} className="w-3 h-3" />
+              </>
+            )}
           </button>
         </div>
+
+        {/* Message si challenge non disponible */}
+        {challenge.statut !== 'en_cours' && (
+          <div className="mt-3 p-2 bg-yellow-500/20 border border-yellow-500/30 rounded-lg">
+            <p className="text-yellow-400 text-xs text-center">
+              {challenge.statut === 'en_attente' 
+                ? 'Ce challenge n\'a pas encore débuté' 
+                : 'Ce challenge est terminé'}
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

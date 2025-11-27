@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faHome,
@@ -11,17 +11,17 @@ import {
   faCode,
   faRobot,
   faChevronDown,
-  faPlus, // ⬅️ AJOUTÉ
+  faPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import LogoutButton from "../auth/LogoutButton";
 import Link from "next/link";
 import { useAuthSession } from "@/hooks/use-auth-session";
+import { useUserChallenges } from "@/hooks/use-user-challenges"; // ⬅️ IMPORT DU HOOK
 
 interface SidebarProps {
   isOpen: boolean;
 }
 
-// ⬇️ NOUVELLE INTERFACE POUR LES ITEMS DE MENU
 interface MenuItem {
   icon: any;
   label: string;
@@ -31,11 +31,40 @@ interface MenuItem {
 }
 
 export default function Sidebar({ isOpen }: SidebarProps) {
-  const { user, loading } = useAuthSession();
+  const { user, loading: authLoading } = useAuthSession();
+  const { challenges, loading: challengesLoading } = useUserChallenges(); // ⬅️ UTILISATION DU HOOK
   const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
 
- 
-  // ⬇️ MENU DE BASE POUR TOUT LE MONDE
+  // ⬇️ FONCTION POUR GÉNÉRER LE SOUS-MENU DYNAMIQUE
+  const generateChallengeSubmenu = () => {
+    const baseSubmenu = [
+      {
+        label: "Tous les challenges",
+        href: "/dashboard/liste-challenge"
+      },
+      {
+        label: "Mes challenges",
+        href: "/dashboard/mes-challenges"
+      },
+    ];
+
+    // ⬇️ AJOUTER LES CHALLENGES ACTIFS DE L'UTILISATEUR
+    const userActiveChallenges = challenges
+      .filter(challenge => challenge.isActive)
+      .map(challenge => ({
+        label: challenge.title, // ⬅️ LE VRAI NOM DU CHALLENGE !
+        href: `/dashboard/serveur-challenge/${challenge.id}`
+      }));
+
+    // ⬇️ AJOUTER "CRÉER UN CHALLENGE" POUR LES SUPER_ADMIN
+    const createChallengeItem = user?.role === "super_admin"
+      ? [{ label: "Créer un challenge", href: "/dashboard/creer-challenge" }]
+      : [];
+
+    return [...baseSubmenu, ...userActiveChallenges, ...createChallengeItem];
+  };
+
+  // ⬇️ MENU DE BASE AVEC CHALLENGES DYNAMIQUES
   const baseMenuItems: MenuItem[] = [
     {
       icon: faHome,
@@ -46,25 +75,7 @@ export default function Sidebar({ isOpen }: SidebarProps) {
     {
       icon: faTrophy,
       label: "Challenges",
-      submenu: [
-        {
-          label: "Tous les challenges",
-          href: "/dashboard/liste-challenge"
-        },
-        {
-          label: "Mes challenges",
-          href: "/dashboard/mes-challenges"
-        },
-        {
-          label: "Serveur Challenge",
-          href: "/dashboard/serveur-challenge"
-        },
-        // ✅ AJOUTE CONDITIONNELLEMENT "Créer un challenge" si super_admin
-        ...(user?.role === "super_admin"
-          ? [{ label: "Créer un challenge", href: "/dashboard/creer-challenge" }]
-          : []
-        ),
-      ],
+      submenu: generateChallengeSubmenu(), // ⬅️ SOUS-MENU DYNAMIQUE ICI
       active: false,
     },
     {
@@ -75,56 +86,64 @@ export default function Sidebar({ isOpen }: SidebarProps) {
     },
   ];
 
-  // ⬇️ TU PEUX MÊME ENLEVER LE MENU ADMIN SI TU VEUX
-  // Ou le garder pour d'autres options admin
+  // ⬇️ MENU ADMIN (INCHANGÉ)
   const adminMenuItems: MenuItem[] =
     user?.role === "super_admin"
       ? [
-        {
-          icon: faCog,
-          label: "Admin",
-          submenu: [
-            {
-              label: "Gérer les utilisateurs",
-              href: "/dashboard/admin/users"
-            },
-            {
-              label: "Modérer les challenges",
-              href: "/dashboard/admin/moderate"
-            },
-          ],
-        },
-      ]
+          {
+            icon: faCog,
+            label: "Admin",
+            submenu: [
+              {
+                label: "Gérer les utilisateurs",
+                href: "/dashboard/admin/users"
+              },
+              {
+                label: "Modérer les challenges",
+                href: "/dashboard/admin/moderate"
+              },
+            ],
+          },
+        ]
       : [];
 
-  console.log("📋 Admin menu items:", adminMenuItems); // ← Debug
-
-  // ⬇️ COMBINAISON DES DEUX MENUS
+  // ⬇️ COMBINAISON DES MENUS
   const menuItems = [...baseMenuItems, ...adminMenuItems];
 
   const toggleSubmenu = (label: string) => {
     setOpenSubmenu(openSubmenu === label ? null : label);
   };
 
-  if (loading) {
+  // ⬇️ GESTION DU CHARGEMENT COMBINÉ
+  if (authLoading || challengesLoading) {
     return (
       <aside
-        className={`fixed left-0 top-0 h-full bg-black border-r border-white transition-all duration-300 z-40 ${isOpen ? "w-72" : "w-20"
-          }`}
+        className={`fixed left-0 top-0 h-full bg-black border-r border-white transition-all duration-300 z-40 ${
+          isOpen ? "w-72" : "w-20"
+        }`}
       >
         <div className="h-20 flex items-center justify-center border-b border-white">
           {isOpen ? "Chargement..." : "..."}
         </div>
+        {/* SQUELETTE DE CHARGEMENT POUR LE MENU */}
+        {isOpen && (
+          <div className="p-4 space-y-2">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="h-12 bg-gray-800 rounded-xl animate-pulse"></div>
+            ))}
+          </div>
+        )}
       </aside>
     );
   }
 
   return (
     <aside
-      className={`fixed left-0 top-0 h-full bg-black border-r border-white transition-all duration-300 z-40 ${isOpen ? "w-72" : "w-20"
-        }`}
+      className={`fixed left-0 top-0 h-full bg-black border-r border-white transition-all duration-300 z-40 ${
+        isOpen ? "w-72" : "w-20"
+      }`}
     >
-      {/* Logo - TON CODE EXISTANT */}
+      {/* Logo - CODE EXISTANT */}
       <div className="h-20 flex items-center justify-center border-b border-white px-4 relative">
         <div className="absolute inset-0 from-blue-500/10 via-purple-500/10 to-pink-500/10"></div>
         {isOpen ? (
@@ -157,15 +176,16 @@ export default function Sidebar({ isOpen }: SidebarProps) {
         <div className="space-y-2">
           {menuItems.map((item, index) => (
             <div key={index}>
-              {/* ⬇️ CONDITION POUR LES ITEMS AVEC SOUS-MENU */}
+              {/* CONDITION POUR LES ITEMS AVEC SOUS-MENU */}
               {item.submenu ? (
                 // Item AVEC sous-menu
                 <button
                   onClick={() => toggleSubmenu(item.label)}
-                  className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 relative group ${item.active
-                    ? "bg-white text-black shadow-lg"
-                    : "text-white hover:text-white hover:bg-white/5"
-                    }`}
+                  className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 relative group ${
+                    item.active
+                      ? "bg-white text-black shadow-lg"
+                      : "text-white hover:text-white hover:bg-white/5"
+                  }`}
                 >
                   {item.active && (
                     <div
@@ -173,18 +193,26 @@ export default function Sidebar({ isOpen }: SidebarProps) {
                     ></div>
                   )}
                   <div
-                    className={`${item.active ? "" : "group-hover:scale-110 transition-transform"
-                      }`}
+                    className={`${
+                      item.active ? "" : "group-hover:scale-110 transition-transform"
+                    }`}
                   >
                     <FontAwesomeIcon icon={item.icon} className="w-5 h-5" />
                   </div>
                   {isOpen && (
                     <>
                       <span className="font-semibold text-base">{item.label}</span>
+                      {/* BADGE POUR MONTRER LE NOMBRE DE CHALLENGES ACTIFS */}
+                      {item.label === "Challenges" && challenges.length > 0 && (
+                        <span className="ml-auto bg-green-500 text-black text-xs font-bold px-2 py-1 rounded-full">
+                          {challenges.filter(c => c.isActive).length}
+                        </span>
+                      )}
                       <FontAwesomeIcon
                         icon={faChevronDown}
-                        className={`w-3 h-3 ml-auto transition-transform duration-200 ${openSubmenu === item.label ? "rotate-180" : ""
-                          }`}
+                        className={`w-3 h-3 transition-transform duration-200 ${
+                          openSubmenu === item.label ? "rotate-180" : ""
+                        }`}
                       />
                     </>
                   )}
@@ -193,10 +221,11 @@ export default function Sidebar({ isOpen }: SidebarProps) {
                 // Item SANS sous-menu (avec lien)
                 <Link
                   href={item.href || "#"}
-                  className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 relative group ${item.active
-                    ? "bg-white text-black shadow-lg"
-                    : "text-white hover:text-white hover:bg-white/5"
-                    }`}
+                  className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 relative group ${
+                    item.active
+                      ? "bg-white text-black shadow-lg"
+                      : "text-white hover:text-white hover:bg-white/5"
+                  }`}
                 >
                   {item.active && (
                     <div
@@ -204,8 +233,9 @@ export default function Sidebar({ isOpen }: SidebarProps) {
                     ></div>
                   )}
                   <div
-                    className={`${item.active ? "" : "group-hover:scale-110 transition-transform"
-                      }`}
+                    className={`${
+                      item.active ? "" : "group-hover:scale-110 transition-transform"
+                    }`}
                   >
                     <FontAwesomeIcon icon={item.icon} className="w-5 h-5" />
                   </div>
@@ -222,26 +252,46 @@ export default function Sidebar({ isOpen }: SidebarProps) {
                 </Link>
               )}
 
-              {/* ⬇️ SOUS-MENU */}
+              {/* SOUS-MENU */}
               {item.submenu && isOpen && openSubmenu === item.label && (
                 <div className="mt-2 space-y-1 overflow-hidden animate-slideDown">
-                  {item.submenu.map((subItem, subIndex) => (
-                    <Link
-                      key={subIndex}
-                      href={subItem.href}
-                      className="w-full text-left pl-14 pr-4 py-2.5 text-gray-400 hover:text-white transition-all text-sm flex items-center gap-3 group relative"
-                    >
-                      {/* Ligne de connexion subtile */}
-                      <div className="absolute left-8 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-gray-700 to-transparent"></div>
+                  {item.submenu.map((subItem, subIndex) => {
+                    // STYLE SPÉCIAL POUR LES CHALLENGES ACTIFS
+                    const isActiveChallenge = challenges.some(
+                      challenge => challenge.title === subItem.label
+                    );
+                    
+                    return (
+                      <Link
+                        key={subIndex}
+                        href={subItem.href}
+                        className={`w-full text-left pl-14 pr-4 py-2.5 transition-all text-sm flex items-center gap-3 group relative ${
+                          isActiveChallenge 
+                            ? "text-green-400 hover:text-green-300" 
+                            : "text-gray-400 hover:text-white"
+                        }`}
+                      >
+                        {/* Ligne de connexion subtile */}
+                        <div className="absolute left-8 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-gray-700 to-transparent"></div>
 
-                      {/* Point indicateur */}
-                      <div className="absolute left-[1.875rem] w-2 h-2 rounded-full border-2 border-gray-700 bg-black group-hover:border-white group-hover:bg-white transition-all"></div>
+                        {/* Point indicateur - vert pour les challenges actifs */}
+                        <div className={`absolute left-[1.875rem] w-2 h-2 rounded-full border-2 bg-black transition-all ${
+                          isActiveChallenge
+                            ? "border-green-400 group-hover:border-green-300 group-hover:bg-green-300"
+                            : "border-gray-700 group-hover:border-white group-hover:bg-white"
+                        }`}></div>
 
-                      <span className="font-medium group-hover:translate-x-1 transition-transform duration-200">
-                        {subItem.label}
-                      </span>
-                    </Link>
-                  ))}
+                        <span className="font-medium group-hover:translate-x-1 transition-transform duration-200">
+                          {subItem.label}
+                        </span>
+
+                        {/* Indicateur de challenge actif */}
+                        {isActiveChallenge && (
+                          <div className="ml-auto w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                        )}
+                      </Link>
+                    );
+                  })}
                 </div>
               )}
             </div>

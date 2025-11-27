@@ -54,17 +54,30 @@ export const verification = pgTable("verification", {
 
 // schema pour challenge
 export const challenge = pgTable("challenge", {
-    id: text("id").primaryKey(),
-    titre: text("titre").notNull(),
-    description: text("description").notNull(),
-    nombrePersonne: integer("nombreP").notNull(),
-    regles: text("regles").notNull(),
-    // sujet: text("sujet").notNull(),
-    // ce champ permet de dire si ah à l'issu de ce challenge le pourcentage de vos vote va compter pour tel nombre de pourcent dans le résultat final en fait
-    pourcentageVote: integer("pourcentageVote").default(100),
-    dateDebut: timestamp("dateDebut").notNull(),
-    dateFin: timestamp("dateFin").notNull(),
-    statut: text("statut").default("en_ attente"),
-    createdBy: text("createdBy").notNull().references(() => user.id),
+  id: text("id").primaryKey(),
+  titre: text("titre").notNull(),
+  description: text("description").notNull(),
+  nombrePersonne: integer("nombreP").notNull(),
+  regles: text("regles").notNull(),
+  // sujet: text("sujet").notNull(),
+  // ce champ permet de dire si ah à l'issu de ce challenge le pourcentage de vos vote va compter pour tel nombre de pourcent dans le résultat final en fait
+  pourcentageVote: integer("pourcentageVote").default(100),
+  dateDebut: timestamp("dateDebut").notNull(),
+  dateFin: timestamp("dateFin").notNull(),
+  statut: text("statut").default("en_ attente"),
+  createdBy: text("createdBy").notNull().references(() => user.id),
 });
+
+// schema pour participation au challenge
+export const participation = pgTable("participation", {
+  id: text("id").primaryKey(),
+  challengeId: text("challengeId").notNull().references(() => challenge.id),
+  userId: text("userId").notNull().references(() => user.id),
+  progression: integer("progression").default(0),
+  statut: text("statut").default("en_cours"),
+  //pour le moment je m'arrête là
+  joinedAt: timestamp("joinedAt").notNull().defaultNow(), // ⬅️ AJOUTÉ
+  isActive: boolean("isActive").notNull().default(true), // ⬅️ AJOUTÉ
+}
+)
 
