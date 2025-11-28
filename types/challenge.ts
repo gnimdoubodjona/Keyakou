@@ -11,3 +11,11 @@ export interface Challenge {
   createdAt: string;   // timestamps
   statut: string;
 }
+
+export interface ChallengeWithCreator extends Challenge {
+  creator: {
+    name: string;
+    email: string;
+    image?: string;
+  };
+}
