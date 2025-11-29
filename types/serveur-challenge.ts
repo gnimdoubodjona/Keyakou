@@ -10,4 +10,6 @@ export interface ServeurChallengeData {
 
 }
 
-export { LeaderboardUser, ChallengeWithCreator };
+
+export { ChallengeWithCreator, LeaderboardUser };
+// export { LeaderboardUser, ChallengeWithCreator };

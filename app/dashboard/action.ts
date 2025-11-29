@@ -3,17 +3,19 @@
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import db from "@/lib/db";
-import { challenge, participation, user } from "@/lib/db/schema";
+import { challenge, participation, soumissions, user } from "@/lib/db/schema";
 import { desc, eq, and } from "drizzle-orm";
 import { nanoid } from "nanoid";
-import { date } from "better-auth";
+import { date, success } from "better-auth";
 import { stat } from "fs";
-import { 
-  ChallengeWithCreator, 
-  ServeurChallengeData,
-  LeaderboardUser 
+import {
+    ChallengeWithCreator,
+    ServeurChallengeData,
+    LeaderboardUser
 } from "@/types/serveur-challenge";
 import { sql } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
+import { get } from "http";
 
 
 
@@ -248,118 +250,180 @@ export async function getChallengeById(id: string) {
 // app/dashboard/action.ts
 
 export async function getChallengeWithUserData(
-  challengeId: string, 
-  userId: string
+    challengeId: string,
+    userId: string
 ): Promise<ServeurChallengeData | null> {
-  console.log("🔍 [ACTION] getChallengeWithUserData CALLED", { challengeId, userId });
+    console.log("🔍 [ACTION] getChallengeWithUserData CALLED", { challengeId, userId });
 
-  try {
-    // 1. Récupérer le challenge AVEC le créateur
-    const challengeData = await db
-      .select({
-        id: challenge.id,
-        titre: challenge.titre,
-        description: challenge.description,
-        nombrePersonne: challenge.nombrePersonne,
-        regles: challenge.regles,
-        pourcentageVote: challenge.pourcentageVote,
-        dateDebut: challenge.dateDebut,
-        dateFin: challenge.dateFin,
-        statut: challenge.statut,
-        createdBy: challenge.createdBy,
-        creator: {
-          name: user.name,
-          email: user.email,
-          image: user.image,
+    try {
+        // 1. Récupérer le challenge AVEC le créateur
+        const challengeData = await db
+            .select({
+                id: challenge.id,
+                titre: challenge.titre,
+                description: challenge.description,
+                nombrePersonne: challenge.nombrePersonne,
+                regles: challenge.regles,
+                pourcentageVote: challenge.pourcentageVote,
+                dateDebut: challenge.dateDebut,
+                dateFin: challenge.dateFin,
+                statut: challenge.statut,
+                createdBy: challenge.createdBy,
+                creator: {
+                    name: user.name,
+                    email: user.email,
+                    image: user.image,
+                }
+            })
+            .from(challenge)
+            .leftJoin(user, eq(challenge.createdBy, user.id))
+            .where(eq(challenge.id, challengeId))
+            .limit(1);
+
+        if (!challengeData[0]) {
+            console.log("❌ [ACTION] Challenge non trouvé");
+            return null;
         }
-      })
-      .from(challenge)
-      .leftJoin(user, eq(challenge.createdBy, user.id))
-      .where(eq(challenge.id, challengeId))
-      .limit(1);
 
-    if (!challengeData[0]) {
-      console.log("❌ [ACTION] Challenge non trouvé");
-      return null;
+        // 2. Récupérer la participation de l'utilisateur
+        const userParticipation = await db
+            .select({
+                progression: participation.progression,
+                statut: participation.statut,
+                joinedAt: participation.joinedAt,
+                isActive: participation.isActive,
+            })
+            .from(participation)
+            .where(
+                and(
+                    eq(participation.challengeId, challengeId),
+                    eq(participation.userId, userId)
+                )
+            )
+            .limit(1);
+
+        // 3. Compter le nombre total de participants
+        const participantsCount = await db
+            .select({ count: sql<number>`count(*)` })
+            .from(participation)
+            .where(
+                and(
+                    eq(participation.challengeId, challengeId),
+                    eq(participation.isActive, true)
+                )
+            );
+
+        // 4. Récupérer le classement
+        const leaderboard = await db
+            .select({
+                userId: user.id,
+                name: user.name,
+                email: user.email,
+                progression: participation.progression,
+                avatar: sql<string>`UPPER(SUBSTRING(${user.name} FROM 1 FOR 2))`,
+                joinedAt: participation.joinedAt,
+            })
+            .from(participation)
+            .innerJoin(user, eq(participation.userId, user.id))
+            .where(
+                and(
+                    eq(participation.challengeId, challengeId),
+                    eq(participation.isActive, true)
+                )
+            )
+            .orderBy(desc(participation.progression));
+
+        // 5. Calculer le rang de l'utilisateur
+        const userRank = leaderboard.findIndex(p => p.userId === userId) + 1;
+
+        // 6. Formater les données avec les interfaces
+        const result: ServeurChallengeData = {
+            challenge: challengeData[0] as ChallengeWithCreator,
+            userParticipation: userParticipation[0] || {
+                progression: 0,
+                statut: "non_inscrit",
+                joinedAt: new Date(),
+                isActive: false,
+            },
+            totalParticipants: participantsCount[0]?.count || 0,
+            userRank,
+            leaderboard: leaderboard.map((user, index): LeaderboardUser => ({
+                rank: index + 1,
+                userId: user.userId,
+                name: user.name || user.email?.split('@')[0] || "Utilisateur",
+                points: user.progression * 10,
+                avatar: user.avatar || "US",
+                progression: user.progression,
+                isYou: user.userId === userId,
+            })),
+        };
+
+        return result;
+
+    } catch (error) {
+        console.error("❌ [ACTION] Erreur récupération données challenge:", error);
+        return null;
     }
+}
 
-    // 2. Récupérer la participation de l'utilisateur
-    const userParticipation = await db
-      .select({
-        progression: participation.progression,
-        statut: participation.statut,
-        joinedAt: participation.joinedAt,
-        isActive: participation.isActive,
-      })
-      .from(participation)
-      .where(
-        and(
-          eq(participation.challengeId, challengeId),
-          eq(participation.userId, userId)
-        )
-      )
-      .limit(1);
+//création d'une soumission pour un challenge
+export async function soumettreElement(formData: FormData) {
+    try {
+        const session = await auth.api.getSession({
+            headers: await headers(),
+        });
+        if (!session?.user) {
+            throw new Error("Utilisateur non authentifié");
+        }
 
-    // 3. Compter le nombre total de participants
-    const participantsCount = await db
-      .select({ count: sql<number>`count(*)` })
-      .from(participation)
-      .where(
-        and(
-          eq(participation.challengeId, challengeId),
-          eq(participation.isActive, true)
-        )
-      );
+        const participationId = formData.get("participationId") as string;
+        const id = formData.get("id") as string;
+        const url = formData.get("url") as string;
+        const snipet = formData.get("snippet") as string;
+        const demo = formData.get("file") as File;
+        const capture_ecran = formData.get("file") as File;
+        const projet_url = formData.get("projet_url") as string;
 
-    // 4. Récupérer le classement
-    const leaderboard = await db
-      .select({
-        userId: user.id,
-        name: user.name,
-        email: user.email,
-        progression: participation.progression,
-        avatar: sql<string>`UPPER(SUBSTRING(${user.name} FROM 1 FOR 2))`,
-        joinedAt: participation.joinedAt,
-      })
-      .from(participation)
-      .innerJoin(user, eq(participation.userId, user.id))
-      .where(
-        and(
-          eq(participation.challengeId, challengeId),
-          eq(participation.isActive, true)
-        )
-      )
-      .orderBy(desc(participation.progression));
 
-    // 5. Calculer le rang de l'utilisateur
-    const userRank = leaderboard.findIndex(p => p.userId === userId) + 1;
 
-    // 6. Formater les données avec les interfaces
-    const result: ServeurChallengeData = {
-      challenge: challengeData[0] as ChallengeWithCreator,
-      userParticipation: userParticipation[0] || {
-        progression: 0,
-        statut: "non_inscrit",
-        joinedAt: new Date(),
-        isActive: false,
-      },
-      totalParticipants: participantsCount[0]?.count || 0,
-      userRank,
-      leaderboard: leaderboard.map((user, index): LeaderboardUser => ({
-        rank: index + 1,
-        userId: user.userId,
-        name: user.name || user.email?.split('@')[0] || "Utilisateur",
-        points: user.progression * 10,
-        avatar: user.avatar || "US",
-        progression: user.progression,
-        isYou: user.userId === userId,
-      })),
-    };
+        //création de la soumission
+        const [nouvelleSoumission] = await db.insert(soumissions).values({
+            id: crypto.randomUUID(),
+            participationId: participationId,
+            url: url || null,
+            snippet: snipet || null,
+            demo: demo || null,
+            capture_ecran: null,
+            statut: "en_attente",
+            dateSoumission: new Date(),
+            projet_url: projet_url || null,
+        })
+            .returning();
 
-    return result;
+        revalidatePath('/dashboard/serveur-challenge/' + id);
+        return {
+            success: true,
+            soumission: nouvelleSoumission,
+            message: "soumission envoyée avec succès"
+        };
 
-  } catch (error) {
-    console.error("❌ [ACTION] Erreur récupération données challenge:", error);
-    return null;
-  }
+
+    } catch (error) {
+        console.error("❌ Erreur lors de la soumission de l'élément:", error);
+        return {
+            success: false,
+            message: "Erreur lors de la soumission de l'élément"
+        };
+    }
+}
+
+//afficher les soumissions d'une participation
+export async function getSoumissionParticipation(participationId: string) {
+    try {
+        const soumissionList = await db.select().from(soumissions).where(eq(soumissions.participationId, participationId)).orderBy(desc(soumissions.dateSoumission));
+        return soumissionList;
+    } catch (error) {
+        console.error("❌ Erreur récupération soumission:", error);
+        return [];
+    }
 }
