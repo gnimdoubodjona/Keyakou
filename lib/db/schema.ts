@@ -83,14 +83,22 @@ export const participation = pgTable("participation", {
 
 export const soumissions = pgTable("soumissions", {
   id: text("id").primaryKey(),
-  participationId: text("participationId").notNull().references(() => participation.id),
-  url: text("url"),              // Lien GitHub
-  snippet: text("snippet"),      // Code snippet
-  demo: text("demo"),            // vidéo demo...
-  projet_url: text("url du projet"),
-  capture_ecran: text("capture_ecran"), // Lien capture d'écran
-  statut: text("statut", { enum: ["en_attente", "valide", "rejete"] }).default("en_attente"),
+  participationId: text("participation_id")
+    .notNull()
+    .references(() => participation.id),
+
+  url: text("url"),                         // Lien GitHub
+  snippet: text("snippet"),                 // Code snippet
+  demo: text("demo"),                       // URL vidéo
+  projet_url: text("projet_url"),           // URL du projet
+  capture_ecran: text("capture_ecran"),     // URL image
+
+  statut: text("statut", {
+    enum: ["en_attente", "valide", "rejete"],
+  }).default("en_attente"),
+
   commentaire_de_soumission: text("commentaire_de_soumission"),
+
   dateSoumission: timestamp("date_soumission").defaultNow(),
 });
 

@@ -372,50 +372,55 @@ export async function soumettreElement(formData: FormData) {
         const session = await auth.api.getSession({
             headers: await headers(),
         });
+
         if (!session?.user) {
             throw new Error("Utilisateur non authentifié");
         }
 
         const participationId = formData.get("participationId") as string;
-        const id = formData.get("id") as string;
-        const url = formData.get("url") as string;
-        const snipet = formData.get("snippet") as string;
-        const demo = formData.get("file") as File;
-        const capture_ecran = formData.get("file") as File;
-        const projet_url = formData.get("projet_url") as string;
+        const challengeId = formData.get("id") as string;
+
+        const url = formData.get("url") as string | null;
+        const snippet = formData.get("snippet") as string | null;
+        const projet_url = formData.get("projet_url") as string | null;
+
+        // Fichiers reçus mais pas encore gérés (upload prochainement)
+        const demo = formData.get("video") as string | null;
+        const capture = formData.get("capture_ecran") as string | null;
 
 
-
-        //création de la soumission
-        const [nouvelleSoumission] = await db.insert(soumissions).values({
-            id: crypto.randomUUID(),
-            participationId: participationId,
-            url: url || null,
-            snippet: snipet || null,
-            demo: demo || null,
-            capture_ecran: null,
-            statut: "en_attente",
-            dateSoumission: new Date(),
-            projet_url: projet_url || null,
-        })
+        const [nouvelleSoumission] = await db
+            .insert(soumissions)
+            .values({
+                id: crypto.randomUUID(),
+                participationId,
+                url,
+                snippet,
+                projet_url,
+                demo: demo,
+                capture_ecran: capture,
+                statut: "en_attente",
+                dateSoumission: new Date(),
+            })
             .returning();
 
-        revalidatePath('/dashboard/serveur-challenge/' + id);
+        revalidatePath(`/dashboard/serveur-challenge/${challengeId}`);
+
         return {
             success: true,
             soumission: nouvelleSoumission,
-            message: "soumission envoyée avec succès"
+            message: "Soumission envoyée avec succès"
         };
 
-
     } catch (error) {
-        console.error("❌ Erreur lors de la soumission de l'élément:", error);
+        console.error("❌ Erreur lors de la soumission:", error);
         return {
             success: false,
-            message: "Erreur lors de la soumission de l'élément"
+            message: "Erreur lors de la soumission"
         };
     }
 }
+
 
 //afficher les soumissions d'une participation
 export async function getSoumissionParticipation(participationId: string) {

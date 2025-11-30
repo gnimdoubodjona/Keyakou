@@ -248,3 +248,6 @@ npm install nanoid
 npm install --save-dev @types/nanoid
 
 installation de "npm install react-hot-toast" pour les notifs
+
+installation d'upload things pour charger les images, vidéos ...
+-npm install uploadthing @uploadthing/react
