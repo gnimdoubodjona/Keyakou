@@ -16,6 +16,8 @@ import {
 import { sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { get } from "http";
+import cloudinary from "@/lib/cloudinary";
+import { Updock } from "next/font/google";
 
 
 
@@ -58,7 +60,7 @@ export async function createChallenge(formData: FormData): Promise<void> {
             createdBy: currentUser.id,
         };
 
-        console.log("📦 Données reçues:", challengeData);
+        // console.log("📦 Données reçues:", challengeData);
         await db.insert(challenge).values(challengeData);
         console.log("✅ Challenge créé avec succès !");
 
@@ -96,11 +98,6 @@ export async function getChallenges() {
         return [];
     }
 }
-
-
-
-
-
 
 
 export async function rejoindreChallenge(challengeId: string): Promise<{ success: boolean; message: string }> {
@@ -230,14 +227,14 @@ export async function getUserChallenges() {
 }
 
 export async function getChallengeById(id: string) {
-    console.log("🔍 [ACTION] getChallengeById CALLED with id =", id);
+    // console.log("🔍 [ACTION] getChallengeById CALLED with id =", id);
 
     try {
         const result = await db.query.challenge.findFirst({
             where: eq(challenge.id, id),
         });
 
-        console.log("🔍 [ACTION] Drizzle result =", result);
+        // console.log("🔍 [ACTION] Drizzle result =", result);
 
         return result;
 
@@ -288,6 +285,7 @@ export async function getChallengeWithUserData(
         // 2. Récupérer la participation de l'utilisateur
         const userParticipation = await db
             .select({
+                id: participation.id,
                 progression: participation.progression,
                 statut: participation.statut,
                 joinedAt: participation.joinedAt,
@@ -366,16 +364,12 @@ export async function getChallengeWithUserData(
     }
 }
 
+
 //création d'une soumission pour un challenge
 export async function soumettreElement(formData: FormData) {
     try {
-        const session = await auth.api.getSession({
-            headers: await headers(),
-        });
-
-        if (!session?.user) {
-            throw new Error("Utilisateur non authentifié");
-        }
+        const session = await auth.api.getSession({ headers: await headers() });
+        if (!session?.user) throw new Error("Utilisateur non authentifié");
 
         const participationId = formData.get("participationId") as string;
         const challengeId = formData.get("id") as string;
@@ -384,42 +378,76 @@ export async function soumettreElement(formData: FormData) {
         const snippet = formData.get("snippet") as string | null;
         const projet_url = formData.get("projet_url") as string | null;
 
-        // Fichiers reçus mais pas encore gérés (upload prochainement)
-        const demo = formData.get("video") as string | null;
-        const capture = formData.get("capture_ecran") as string | null;
+        const demo = formData.get("video") as File | null;
+        const capture = formData.get("capture_ecran") as File | null;
 
+        let demoUrl: string | null = null;
+        let captureUrl: string | null = null;
 
-        const [nouvelleSoumission] = await db
-            .insert(soumissions)
-            .values({
-                id: crypto.randomUUID(),
-                participationId,
-                url,
-                snippet,
-                projet_url,
-                demo: demo,
-                capture_ecran: capture,
-                statut: "en_attente",
-                dateSoumission: new Date(),
-            })
-            .returning();
+        // console.log("📁 Fichiers reçus :", {
+        //     demo: demo?.name,
+        //     capture: capture?.name
+        // });
+
+        // Fonction utilitaire d’upload sur Cloudinary
+        const uploadToCloudinary = (file: File, options: any) => {
+            return new Promise((resolve, reject) => {
+                const uploadStream = cloudinary.uploader.upload_stream(
+                    options,
+                    (error, result) => {
+                        if (error) reject(error);
+                        else resolve(result);
+                    }
+                );
+
+                file.arrayBuffer().then(buffer => {
+                    uploadStream.end(Buffer.from(buffer));
+                });
+            });
+        };
+
+        // Upload vidéo
+        if (demo && demo.size > 0) {
+            const result: any = await uploadToCloudinary(demo, {
+                resource_type: "video",
+                folder: "challenge_assets"
+            });
+            demoUrl = result.secure_url;
+        }
+
+        // Upload capture d'écran
+        if (capture && capture.size > 0) {
+            const result: any = await uploadToCloudinary(capture, {
+                folder: "challenge_assets"
+            });
+            captureUrl = result.secure_url;
+        }
+
+        // Enregistrement DB
+        const [nouvelleSoumission] = await db.insert(soumissions).values({
+            id: crypto.randomUUID(),
+            participationId,
+            url,
+            snippet,
+            projet_url,
+            demo: demoUrl,
+            capture_ecran: captureUrl,
+            statut: "en_attente",
+            dateSoumission: new Date()
+        }).returning();
+
+        // console.log("📌 Soumission enregistrée :", nouvelleSoumission);
 
         revalidatePath(`/dashboard/serveur-challenge/${challengeId}`);
 
-        return {
-            success: true,
-            soumission: nouvelleSoumission,
-            message: "Soumission envoyée avec succès"
-        };
+        return { success: true, soumission: nouvelleSoumission };
 
     } catch (error) {
-        console.error("❌ Erreur lors de la soumission:", error);
-        return {
-            success: false,
-            message: "Erreur lors de la soumission"
-        };
+        console.error("❌ Erreur soumission:", error);
+        return { success: false, message: "Erreur lors de la soumission" };
     }
 }
+
 
 
 //afficher les soumissions d'une participation

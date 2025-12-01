@@ -83,7 +83,7 @@ export const participation = pgTable("participation", {
 
 export const soumissions = pgTable("soumissions", {
   id: text("id").primaryKey(),
-  participationId: text("participation_id")
+  participationId: text("participationId")
     .notNull()
     .references(() => participation.id),
 

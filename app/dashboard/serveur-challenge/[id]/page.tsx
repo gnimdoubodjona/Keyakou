@@ -3,13 +3,14 @@ import { getChallengeWithUserData } from "../../action";
 import { headers } from "next/headers";
 import { notFound, redirect } from "next/navigation";
 import { ServeurChallengeData } from "@/types/serveur-challenge";
+import SoumissionModal from "@/components/dashboard/Soumission";
 
-export default async function ServeurChallengePage({ 
-  params 
-}: { 
+export default async function ServeurChallengePage({
+  params
+}: {
   params: Promise<{ id: string }>
 }) {
-  
+
   // 1. Récupérer l'ID du challenge
   const { id: challengeId } = await params;
 
@@ -32,11 +33,11 @@ export default async function ServeurChallengePage({
 
   // 3. Récupérer TOUTES les données (challenge + participation)
   const data: ServeurChallengeData | null = await getChallengeWithUserData(
-    challengeId, 
+    challengeId,
     session.user.id
   );
 
-  console.log("📌 [PAGE] Données reçues =", data);
+  // console.log("📌 [PAGE] Données reçues =", data);
 
   if (!data) {
     return (
@@ -58,7 +59,7 @@ export default async function ServeurChallengePage({
   return (
     <div className="min-h-screen bg-black text-white p-6">
       <div className="max-w-4xl mx-auto">
-        
+
         {/* HEADER AVEC INFOS PERSONNELLES */}
         <div className="bg-white rounded-3xl p-8 mb-6 border-2 border-white">
           <div className="flex items-start justify-between mb-6">
@@ -162,15 +163,13 @@ export default async function ServeurChallengePage({
               {leaderboard.slice(0, 5).map((user) => (
                 <div
                   key={user.rank}
-                  className={`flex items-center justify-between p-4 rounded-xl ${
-                    user.isYou ? "bg-white text-black" : "bg-gray-900/50"
-                  }`}
+                  className={`flex items-center justify-between p-4 rounded-xl ${user.isYou ? "bg-white text-black" : "bg-gray-900/50"
+                    }`}
                 >
                   <div className="flex items-center gap-4">
                     <div className="w-8 text-center font-bold">#{user.rank}</div>
-                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold ${
-                      user.isYou ? "bg-black text-white" : "bg-white text-black"
-                    }`}>
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold ${user.isYou ? "bg-black text-white" : "bg-white text-black"
+                      }`}>
                       {user.avatar}
                     </div>
                     <div>
@@ -186,6 +185,11 @@ export default async function ServeurChallengePage({
         )}
 
       </div>
+
+      <SoumissionModal
+        participationId={userParticipation.id}
+        challengeId={challenge.id}
+      />
     </div>
   );
 }

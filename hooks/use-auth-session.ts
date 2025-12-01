@@ -21,8 +21,8 @@ export function useAuthSession() {
         const response = await fetch("/api/auth/get-session");
         const data = await response.json();
         
-        console.log("📦 Data reçue:", data);
-        console.log("👤 Role de l'utilisateur:", data.user?.role); // ← Debug
+        // console.log("📦 Data reçue:", data);
+        // console.log("👤 Role de l'utilisateur:", data.user?.role); // ← Debug
         
         if (data.user) {
           // ✅ IMPORTANT : Assure-toi que le role est bien inclus
