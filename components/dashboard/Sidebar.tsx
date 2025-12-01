@@ -46,6 +46,10 @@ export default function Sidebar({ isOpen }: SidebarProps) {
         label: "Mes challenges",
         href: "/dashboard/mes-challenges"
       },
+      {
+        label:"Exploration",
+        href: "/dashboard/exploration-challenges"
+      },
     ];
 
     // ⬇️ AJOUTER LES CHALLENGES ACTIFS DE L'UTILISATEUR
