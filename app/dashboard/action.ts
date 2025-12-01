@@ -366,64 +366,118 @@ export async function getChallengeWithUserData(
 
 
 //création d'une soumission pour un challenge
-export async function soumettreElement(formData: FormData) {
+// export async function soumettreElement(formData: FormData) {
+//     try {
+//         const session = await auth.api.getSession({ headers: await headers() });
+//         if (!session?.user) throw new Error("Utilisateur non authentifié");
+
+//         const participationId = formData.get("participationId") as string;
+//         const challengeId = formData.get("id") as string;
+
+//         const url = formData.get("url") as string | null;
+//         const snippet = formData.get("snippet") as string | null;
+//         const projet_url = formData.get("projet_url") as string | null;
+
+//         const demo = formData.get("video") as File | null;
+//         const capture = formData.get("capture_ecran") as File | null;
+
+//         let demoUrl: string | null = null;
+//         let captureUrl: string | null = null;
+
+//         // console.log("📁 Fichiers reçus :", {
+//         //     demo: demo?.name,
+//         //     capture: capture?.name
+//         // });
+
+//         // Fonction utilitaire d’upload sur Cloudinary
+//         const uploadToCloudinary = (file: File, options: any) => {
+//             return new Promise((resolve, reject) => {
+//                 const uploadStream = cloudinary.uploader.upload_stream(
+//                     options,
+//                     (error, result) => {
+//                         if (error) reject(error);
+//                         else resolve(result);
+//                     }
+//                 );
+
+//                 file.arrayBuffer().then(buffer => {
+//                     uploadStream.end(Buffer.from(buffer));
+//                 });
+//             });
+//         };
+
+//         // Upload vidéo
+//         if (demo && demo.size > 0) {
+//             const result: any = await uploadToCloudinary(demo, {
+//                 resource_type: "video",
+//                 folder: "challenge_assets"
+//             });
+//             demoUrl = result.secure_url;
+//         }
+
+//         // Upload capture d'écran
+//         if (capture && capture.size > 0) {
+//             const result: any = await uploadToCloudinary(capture, {
+//                 folder: "challenge_assets"
+//             });
+//             captureUrl = result.secure_url;
+//         }
+
+//         // Enregistrement DB
+//         const [nouvelleSoumission] = await db.insert(soumissions).values({
+//             id: crypto.randomUUID(),
+//             participationId,
+//             url,
+//             snippet,
+//             projet_url,
+//             demo: demoUrl,
+//             capture_ecran: captureUrl,
+//             statut: "en_attente",
+//             dateSoumission: new Date()
+//         }).returning();
+
+//         // console.log("📌 Soumission enregistrée :", nouvelleSoumission);
+
+//         revalidatePath(`/dashboard/serveur-challenge/${challengeId}`);
+
+//         return { success: true, soumission: nouvelleSoumission };
+
+//     } catch (error) {
+//         console.error("❌ Erreur soumission:", error);
+//         return { success: false, message: "Erreur lors de la soumission" };
+//     }
+// }
+
+// Dans action.ts - GARDEZ UNIQUEMENT soumettreSansFichiers
+export async function soumettreSansFichiers(formData: FormData) {
     try {
         const session = await auth.api.getSession({ headers: await headers() });
         if (!session?.user) throw new Error("Utilisateur non authentifié");
 
         const participationId = formData.get("participationId") as string;
         const challengeId = formData.get("id") as string;
-
         const url = formData.get("url") as string | null;
         const snippet = formData.get("snippet") as string | null;
         const projet_url = formData.get("projet_url") as string | null;
 
-        const demo = formData.get("video") as File | null;
-        const capture = formData.get("capture_ecran") as File | null;
+        const demoUrl = formData.get("demoUrl") as string | null;
+        const captureUrl = formData.get("captureUrl") as string | null;
 
-        let demoUrl: string | null = null;
-        let captureUrl: string | null = null;
-
-        // console.log("📁 Fichiers reçus :", {
-        //     demo: demo?.name,
-        //     capture: capture?.name
-        // });
-
-        // Fonction utilitaire d’upload sur Cloudinary
-        const uploadToCloudinary = (file: File, options: any) => {
-            return new Promise((resolve, reject) => {
-                const uploadStream = cloudinary.uploader.upload_stream(
-                    options,
-                    (error, result) => {
-                        if (error) reject(error);
-                        else resolve(result);
-                    }
-                );
-
-                file.arrayBuffer().then(buffer => {
-                    uploadStream.end(Buffer.from(buffer));
-                });
-            });
-        };
-
-        // Upload vidéo
-        if (demo && demo.size > 0) {
-            const result: any = await uploadToCloudinary(demo, {
-                resource_type: "video",
-                folder: "challenge_assets"
-            });
-            demoUrl = result.secure_url;
+        // Validation
+        if (!demoUrl && !captureUrl) {
+            return { success: false, message: "Au moins un fichier (vidéo ou image) est requis" };
         }
 
-        // Upload capture d'écran
-        if (capture && capture.size > 0) {
-            const result: any = await uploadToCloudinary(capture, {
-                folder: "challenge_assets"
-            });
-            captureUrl = result.secure_url;
+        if (!participationId) {
+            return { success: false, message: "ID de participation manquant" };
         }
 
-        // Enregistrement DB
+        console.log("📝 Enregistrement soumission:", {
+            participationId,
+            demoUrl: demoUrl ? "✓" : "✗",
+            captureUrl: captureUrl ? "✓" : "✗"
+        });
+
         const [nouvelleSoumission] = await db.insert(soumissions).values({
             id: crypto.randomUUID(),
             participationId,
@@ -436,17 +490,16 @@ export async function soumettreElement(formData: FormData) {
             dateSoumission: new Date()
         }).returning();
 
-        // console.log("📌 Soumission enregistrée :", nouvelleSoumission);
-
         revalidatePath(`/dashboard/serveur-challenge/${challengeId}`);
 
         return { success: true, soumission: nouvelleSoumission };
 
     } catch (error) {
         console.error("❌ Erreur soumission:", error);
-        return { success: false, message: "Erreur lors de la soumission" };
+        return { success: false, message: "Erreur lors de l'enregistrement" };
     }
 }
+
 
 
 
