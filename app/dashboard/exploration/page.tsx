@@ -5,33 +5,22 @@ export default async function Exploration() {
   const soumissions = await getAllSoumissions();
 
   return (
-    <div style={{ padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
+    <div >
      
-      <div style={{ display: 'grid', gap: '30px' }}>
+      <div >
         {soumissions.map((s, i) => (
           <div 
             key={s.id} 
-            style={{
-              padding: '20px',
-              border: '1px solid #e0e0e0',
-              borderRadius: '12px',
-              backgroundColor: '#fff',
-              boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
-            }}
+            className=""
           >
             {/* En-tête */}
-            <div style={{ marginBottom: '15px' }}>
-              <div style={{ 
-                display: 'flex', 
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                marginBottom: '10px'
-              }}>
+            <div className="">
+              <div className="">
                 <div>
-                  <h2 style={{ margin: 0, fontSize: '18px' }}>
+                  <h2 className="">
                     {s.userName || s.userEmail.split('@')[0]}
                   </h2>
-                  <p style={{ margin: '5px 0 0 0', color: '#666', fontSize: '14px' }}>
+                  <p className="">
                     Challenge: <strong>{s.challengeTitre}</strong>
                   </p>
                 </div>
@@ -60,28 +49,23 @@ export default async function Exploration() {
             
             {/* SECTION VIDÉO - IMPORTANT: AFFICHAGE RÉEL DE LA VIDÉO */}
             {s.demo && (
-              <div style={{ margin: '20px 0' }}>
-                <h3 style={{ marginBottom: '10px', fontSize: '16px' }}>Vidéo de démo</h3>
-                <div style={{ 
-                  backgroundColor: '#000', 
-                  borderRadius: '8px',
-                  overflow: 'hidden',
-                  maxWidth: '800px'
-                }}>
+              <div >
+                <h3 >Vidéo de démo</h3>
+                <div>
                   {/* CE CI EST LE LECTEUR VIDÉO RÉEL */}
                   <video 
                     controls 
                     width="100%" 
-                    style={{ display: 'block' }}
+                    
                     preload="metadata"
                   >
                     <source src={s.demo} type="video/mp4" />
                     Votre navigateur ne supporte pas la lecture de vidéos.
                   </video>
                 </div>
-                <p style={{ fontSize: '12px', color: '#666', marginTop: '5px' }}>
+                {/* <p >
                   Source: {s.demo.substring(0, 50)}...
-                </p>
+                </p> */}
               </div>
             )}
             
@@ -183,17 +167,11 @@ export default async function Exploration() {
             
             {/* COMMENTAIRE */}
             {s.commentaire_de_soumission && (
-              <div style={{ 
-                marginTop: '20px', 
-                padding: '15px',
-                backgroundColor: '#f8f9fa',
-                borderRadius: '8px',
-                borderLeft: '4px solid #3b82f6'
-              }}>
-                <h4 style={{ margin: '0 0 8px 0', fontSize: '14px', color: '#555' }}>
+              <div >
+                <h4 >
                   Commentaire
                 </h4>
-                <p style={{ margin: 0, fontSize: '14px', lineHeight: '1.5' }}>
+                <p >
                   {s.commentaire_de_soumission}
                 </p>
               </div>
