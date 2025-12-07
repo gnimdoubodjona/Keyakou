@@ -501,8 +501,6 @@ export async function soumettreSansFichiers(formData: FormData) {
 }
 
 
-
-
 //afficher les soumissions d'une participation
 export async function getSoumissionParticipation(participationId: string) {
     try {
@@ -513,3 +511,44 @@ export async function getSoumissionParticipation(participationId: string) {
         return [];
     }
 }
+
+
+// Dans votre action.ts - AJOUTEZ CETTE FONCTION
+export async function getAllSoumissions() {
+    try {
+        const soumissionList = await db
+            .select({
+                id: soumissions.id,
+                participationId: soumissions.participationId,
+                url: soumissions.url,
+                snippet: soumissions.snippet,
+                demo: soumissions.demo,
+                projet_url: soumissions.projet_url,
+                capture_ecran: soumissions.capture_ecran,
+                statut: soumissions.statut,
+                commentaire_de_soumission: soumissions.commentaire_de_soumission,
+                dateSoumission: soumissions.dateSoumission,
+                // Jointure avec participation
+                challengeId: participation.challengeId,
+                userId: participation.userId,
+                progression: participation.progression,
+                // Jointure avec user
+                userName: user.name,
+                userEmail: user.email,
+                userImage: user.image,
+                // Jointure avec challenge
+                challengeTitre: challenge.titre,
+            })
+            .from(soumissions)
+            .innerJoin(participation, eq(soumissions.participationId, participation.id))
+            .innerJoin(user, eq(participation.userId, user.id))
+            .innerJoin(challenge, eq(participation.challengeId, challenge.id))
+            .orderBy(desc(soumissions.dateSoumission));
+
+        return soumissionList;
+    } catch (error) {
+        console.error("❌ Erreur récupération toutes les soumissions:", error);
+        return [];
+    }
+}
+

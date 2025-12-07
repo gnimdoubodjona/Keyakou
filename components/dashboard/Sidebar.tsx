@@ -48,7 +48,7 @@ export default function Sidebar({ isOpen }: SidebarProps) {
       },
       {
         label:"Exploration",
-        href: "/dashboard/exploration-challenges"
+        href: "/dashboard/exploration_challenges"
       },
     ];
 
