@@ -32,7 +32,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr" suppressHydrationWarning>
-      <body className={`${spaceGrotesk.variable} ${jetbrainsMono.variable}`}>
+      <body className={`${spaceGrotesk.variable} ${jetbrainsMono.variable} `} >
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
