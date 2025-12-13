@@ -89,83 +89,8 @@ export default function Body() {
 
     return (
         <div className="min-h-screen bg-black">
-            {/* Hero Section */}
-            {/* Hero Section */}
-            <section className="relative overflow-hidden pt-32 pb-40 px-4">
-                {/* Grid Background */}
-                <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:64px_64px]"></div>
-
-                {/* Gradient Glow */}
-                <div className="absolute inset-0">
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] bg-gradient-radial from-red-600/30 via-purple-600/20 to-transparent blur-3xl"></div>
-                </div>
-
-                <div className="max-w-7xl mx-auto relative z-10">
-                    <div className="grid lg:grid-cols-2 gap-12 items-center">
-                        {/* Partie Gauche - Texte */}
-                        <div className="space-y-8">
-                            <span className="inline-flex items-center rounded-full bg-gray-300 p-2 m-1 hover:bg-gray-200 text-xl font-bold text-black inset-ring inset-ring-red-400/20">
-                                Badge
-                            </span>
-
-                            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight tracking-tight">
-                                Transformez vos idées
-                                <br />
-                                en <span className="bg-gradient-to-r from-red-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">projets gagnants</span>
-                            </h1>
-
-                            <p className="text-lg md:text-xl text-gray-300 leading-relaxed">
-                                Participez à des challenges de code, soumettez vos démos,
-                                et montrez vos compétences à une communauté passionnée.
-                            </p>
-
-                            <div className="flex flex-col sm:flex-row gap-4 pt-4">
-                                <button className="group bg-gradient-to-r from-red-600 to-red-500 text-white px-8 py-3 rounded-xl font-bold text-lg hover:shadow-2xl hover:shadow-red-500/50 transition-all duration-300 flex items-center justify-center gap-3">
-                                    Commencer gratuitement
-                                    <FontAwesomeIcon icon={faArrowRight} className="group-hover:translate-x-1 transition-transform" />
-                                </button>
-
-                                <button className="group bg-transparent border-2 border-gray-600 text-white px-8 py-3 rounded-xl font-bold text-lg hover:bg-white/5 transition-all duration-300">
-                                    Voir les challenges
-                                </button>
-                            </div>
-
-                            <div className="flex items-center gap-2 text-sm text-gray-400 pt-4">
-                                <FontAwesomeIcon icon={faCheckCircle} className="text-green-400" />
-                                <span>Connexion avec Google ou GitHub</span>
-                            </div>
-                        </div>
-
-                        {/* Partie Droite - Floating Cards */}
-                        <div className="relative min-h-[500px] lg:min-h-[600px]">
-                            <div className="grid absolute inset-0 pointer-events-none">
-                                {/* Position modifiée pour être à droite */}
-                                <div className="absolute top-20 right-[25%] w-20 h-20 bg-gray-800/80 backdrop-blur-sm border border-gray-700 rounded-2xl flex items-center justify-center transform rotate-6 hover:rotate-0 transition-transform duration-300">
-                                    <FontAwesomeIcon icon={faCode} className="text-3xl text-purple-400" />
-                                </div>
-                                <div className="absolute top-40 right-[5%] w-20 h-20 bg-gray-800/80 backdrop-blur-sm border border-gray-700 rounded-2xl flex items-center justify-center transform -rotate-6 hover:rotate-0 transition-transform duration-300">
-                                    <FontAwesomeIcon icon={faGithub} className="text-3xl text-white" />
-                                </div>
-                                <div className="absolute top-1/2 right-[20%] w-24 h-24 bg-gray-800/80 backdrop-blur-sm border border-gray-700 rounded-2xl flex items-center justify-center transform -rotate-12 hover:rotate-0 transition-transform duration-300">
-                                    <FontAwesomeIcon icon={faRocket} className="text-4xl text-blue-400" />
-                                </div>
-                                <div className="absolute bottom-32 right-[10%] w-20 h-20 bg-gray-800/80 backdrop-blur-sm border border-gray-700 rounded-2xl flex items-center justify-center transform rotate-12 hover:rotate-0 transition-transform duration-300">
-                                    <FontAwesomeIcon icon={faTrophy} className="text-3xl text-yellow-400" />
-                                </div>
-                                {/* Optionnel : Ajouter un élément supplémentaire */}
-                                <div className="absolute bottom-20 right-[30%] w-16 h-16 bg-gray-800/80 backdrop-blur-sm border border-gray-700 rounded-2xl flex items-center justify-center transform rotate-3 hover:rotate-0 transition-transform duration-300">
-                                    <FontAwesomeIcon icon={faUsers} className="text-2xl text-green-400" />
-                                </div>
-                            </div>
-
-                            {/* Conteneur pour centrer visuellement */}
-                            <div className="absolute inset-0 flex items-center justify-center">
-                                <div className="w-64 h-64 bg-gradient-to-br from-red-500/10 via-purple-500/10 to-pink-500/10 rounded-full blur-xl"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
+           
+          
 
             {/* Stats Section */}
             <section className="py-16 px-4 bg-gray-800/50 backdrop-blur-sm">

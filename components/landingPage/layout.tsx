@@ -1,5 +1,6 @@
 import Body from "./Body";
 import Footer from "./Footer";
+import Hero from "./Hero";
 import NavBar from "./NavBar";
 
 export default function Layout({ children } : { children: React.ReactNode}){
@@ -8,7 +9,8 @@ export default function Layout({ children } : { children: React.ReactNode}){
             <NavBar/>
             {/* <main> {children} </main> */}
             <main>
-                <Body/>
+                {/* <Body/> */}
+                <Hero/>
             </main>
             <Footer/>
         </div>
