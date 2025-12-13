@@ -6,56 +6,10 @@ export default function Hero() {
     return (
         <div className="bg-black">
             {/* Hero Section */}
-            <section className="relative overflow-hidden pt-32 pb-40 px-4">
-                {/* Grille Blueprint avec lignes en tirets */}
-                <div className="absolute inset-0 opacity-20">
-                    {/* Lignes verticales en tirets */}
-                    {[...Array(12)].map((_, i) => (
-                        <div
-                            key={`v-${i}`}
-                            className="absolute top-0 bottom-0 w-px"
-                            style={{
-                                left: `${i * 10}%`,
-                                background: 'repeating-linear-gradient(0deg, transparent, transparent 8px, rgba(255,255,255,0.4) 8px, rgba(255,255,255,0.4) 12px, transparent 12px, transparent 20px)'
-                            }}
-                        />
-                    ))}
-                    
-                    {/* Lignes horizontales en tirets */}
-                    {[...Array(10)].map((_, i) => (
-                        <div
-                            key={`h-${i}`}
-                            className="absolute left-0 right-0 h-px"
-                            style={{
-                                top: `${i * 12}%`,
-                                background: 'repeating-linear-gradient(90deg, transparent, transparent 8px, rgba(255,255,255,0.4) 8px, rgba(255,255,255,0.4) 12px, transparent 12px, transparent 20px)'
-                            }}
-                        />
-                    ))}
-                    
-                    {/* Croix aux intersections */}
-                    {[...Array(12)].map((_, i) =>
-                        [...Array(10)].map((_, j) => (
-                            <div
-                                key={`cross-${i}-${j}`}
-                                className="absolute w-2 h-2"
-                                style={{
-                                    left: `${i * 10}%`,
-                                    top: `${j * 12}%`,
-                                    transform: 'translate(-50%, -50%)'
-                                }}
-                            >
-                                <div className="absolute inset-0 flex items-center justify-center text-white/50 text-[8px] font-bold">
-                                    +
-                                </div>
-                            </div>
-                        ))
-                    )}
-                </div>
-
+            <section className="relative overflow-hidden p-10">
                 {/* Glow subtil blanc au centre (optionnel) */}
                 <div className="absolute inset-0">
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[500px] bg-white/5 rounded-full blur-3xl"></div>
+                    <div className="absolute top-1/2 right-1/4 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-white/5 rounded-full blur-3xl"></div>
                 </div>
 
                 <div className="max-w-7xl mx-auto relative z-10">
@@ -94,23 +48,101 @@ export default function Hero() {
                             </div>
                         </div>
 
-                        {/* Partie Droite - Floating Cards */}
+                        {/* Partie Droite - Floating Cards avec Grille */}
                         <div className="relative min-h-[500px] lg:min-h-[600px] hidden lg:block">
-                            {/* Floating Cards en noir et blanc */}
+                            {/* Grille Blueprint - UNIQUEMENT côté droit */}
+                            <div className="absolute inset-0 opacity-25">
+                                {/* Lignes verticales en tirets */}
+                                {[...Array(6)].map((_, i) => (
+                                    <div
+                                        key={`v-${i}`}
+                                        className="absolute top-0 bottom-0 w-px"
+                                        style={{
+                                            left: `${i * 20}%`,
+                                            background: 'white 1px linear-gradient(0deg, transparent, transparent 10px, rgba(255,255,255,0.5) 10px, rgba(255,255,255,0.5) 15px, transparent 15px, transparent 25px)'
+                                        }}
+                                    />
+                                ))}
+                                
+                                {/* Lignes horizontales en tirets */}
+                                {[...Array(7)].map((_, i) => (
+                                    <div
+                                        key={`h-${i}`}
+                                        className="absolute left-0 right-0 h-px"
+                                        style={{
+                                            top: `${i * 16.66}%`,
+                                            background: 'white 1px linear-gradient(90deg, transparent, transparent 10px, rgba(255,255,255,0.5) 10px, rgba(255,255,255,0.5) 15px, transparent 15px, transparent 25px)'
+                                        }}
+                                    />
+                                ))}
+                                
+                                {/* Croix aux intersections */}
+                                {[...Array(6)].map((_, i) =>
+                                    [...Array(7)].map((_, j) => (
+                                        <div
+                                            key={`cross-${i}-${j}`}
+                                            className="absolute"
+                                            style={{
+                                                left: `${i * 20}%`,
+                                                top: `${j * 16.66}%`,
+                                                transform: 'translate(-50%, -50%)'
+                                            }}
+                                        >
+                                            <div className="text-white text-2xl font-bold">+</div>
+                                        </div>
+                                    ))
+                                )}
+                            </div>
+
+                            {/* Floating Cards alignées sur la grille */}
                             <div className="absolute inset-0">
-                                <div className="absolute top-20 right-[25%] w-24 h-24 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl flex items-center justify-center transform rotate-6 hover:rotate-0 hover:scale-110 transition-all duration-300">
+                                {/* Card 1 - Intersection (4, 1) - faCode */}
+                                <div 
+                                    className="absolute w-24 h-24 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl flex items-center justify-center hover:scale-110 transition-all duration-300"
+                                    style={{
+                                        left: '60%',
+                                        top: '16.66%',
+                                        transform: 'translate(-50%, -50%)'
+                                    }}
+                                >
                                     <FontAwesomeIcon icon={faCode} className="text-4xl text-white" />
                                 </div>
-                                <div className="absolute top-40 right-[5%] w-24 h-24 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl flex items-center justify-center transform -rotate-6 hover:rotate-0 hover:scale-110 transition-all duration-300">
+
+                                {/* Card 2 - Intersection (5, 2) - faGithub */}
+                                <div 
+                                    className="absolute w-24 h-24 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl flex items-center justify-center hover:scale-110 transition-all duration-300"
+                                    style={{
+                                        left: '40%',
+                                        top: '48.64%',
+                                        transform: 'translate(-50%, -50%)'
+                                    }}
+                                >
                                     <FontAwesomeIcon icon={faGithub} className="text-4xl text-white" />
                                 </div>
-                                <div className="absolute top-1/2 right-[20%] w-28 h-28 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl flex items-center justify-center transform -rotate-12 hover:rotate-0 hover:scale-110 transition-all duration-300">
-                                    <FontAwesomeIcon icon={faRocket} className="text-5xl text-white" />
-                                </div>
-                                <div className="absolute bottom-32 right-[10%] w-24 h-24 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl flex items-center justify-center transform rotate-12 hover:rotate-0 hover:scale-110 transition-all duration-300">
+
+                               
+
+                                {/* Card 4 - Intersection (4, 5) - faTrophy */}
+                                <div 
+                                    className="absolute w-24 h-24 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl flex items-center justify-center hover:scale-110 transition-all duration-300"
+                                    style={{
+                                        left: '80%',
+                                        top: '48.64%',
+                                        transform: 'translate(-50%, -50%)'
+                                    }}
+                                >
                                     <FontAwesomeIcon icon={faTrophy} className="text-4xl text-white" />
                                 </div>
-                                <div className="absolute bottom-20 right-[35%] w-20 h-20 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl flex items-center justify-center transform rotate-3 hover:rotate-0 hover:scale-110 transition-all duration-300">
+
+                                {/* Card 5 - Intersection (2, 4) - faUsers */}
+                                <div 
+                                    className="absolute w-24 h-24 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl flex items-center justify-center hover:scale-110 transition-all duration-300"
+                                    style={{
+                                        left: '-10%',
+                                        top: '48.64%',
+                                        transform: 'translate(-50%, -50%)'
+                                    }}
+                                >
                                     <FontAwesomeIcon icon={faUsers} className="text-3xl text-white" />
                                 </div>
                             </div>
