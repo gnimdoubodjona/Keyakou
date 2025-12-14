@@ -21,9 +21,11 @@ export default function Hero() {
                             </span>
 
                             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight">
-                                Transformez vos idées
+                                Apprenez tout en vous
                                 <br />
-                                en <span className="underline decoration-wavy decoration-white/50">projets gagnants</span>
+                                <span className=" p-3 bg-gray-600 border rounded-lg ">cHallengEANT</span>
+                                <br />
+                                <span >maintenant.</span>
                             </h1>
 
                             <p className="text-lg md:text-xl text-gray-400 leading-relaxed">
@@ -32,20 +34,23 @@ export default function Hero() {
                             </p>
 
                             <div className="flex flex-col sm:flex-row gap-4 pt-4">
-                                <button className="group bg-white text-black px-8 py-3 rounded-xl font-bold text-lg hover:bg-gray-200 transition-all duration-300 flex items-center justify-center gap-3">
+                                <button className="group bg-white text-black px-8 py-3 rounded-xl font-bold text-lg hover:bg-white transition-all duration-300 flex items-center justify-center gap-3">
                                     Commencer gratuitement
-                                    <FontAwesomeIcon icon={faArrowRight} className="group-hover:translate-x-1 transition-transform" />
+                                    <FontAwesomeIcon
+                                        icon={faRocket}
+                                        className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300"
+                                    />
                                 </button>
 
-                                <button className="group bg-transparent border-2 border-white text-white px-8 py-3 rounded-xl font-bold text-lg hover:bg-white hover:text-black transition-all duration-300">
+                                <button className="group bg-transparent border-2 border-white text-white px-8 py-3 rounded-xl font-bold text-lg  transition-all duration-300">
                                     Voir les challenges
                                 </button>
                             </div>
 
-                            <div className="flex items-center gap-2 text-sm text-gray-400 pt-4">
+                            {/* <div className="flex items-center gap-2 text-sm text-gray-400 pt-4">
                                 <FontAwesomeIcon icon={faCheckCircle} className="text-white" />
                                 <span>Connexion avec Google ou GitHub</span>
-                            </div>
+                            </div> */}
                         </div>
 
                         {/* Partie Droite - Floating Cards avec Grille */}
@@ -53,32 +58,34 @@ export default function Hero() {
                             {/* Grille Blueprint - UNIQUEMENT côté droit */}
                             <div className="absolute inset-0 opacity-25">
                                 {/* Lignes verticales en tirets */}
-                                {[...Array(6)].map((_, i) => (
+                                {[...Array(5)].map((_, i) => (
                                     <div
                                         key={`v-${i}`}
                                         className="absolute top-0 bottom-0 w-px"
                                         style={{
                                             left: `${i * 20}%`,
+                                            // right: `${(i*20)}%`,
                                             background: 'white 1px linear-gradient(0deg, transparent, transparent 10px, rgba(255,255,255,0.5) 10px, rgba(255,255,255,0.5) 15px, transparent 15px, transparent 25px)'
                                         }}
                                     />
                                 ))}
-                                
+
                                 {/* Lignes horizontales en tirets */}
-                                {[...Array(7)].map((_, i) => (
+                                {[...Array(5)].map((_, i) => (
                                     <div
                                         key={`h-${i}`}
                                         className="absolute left-0 right-0 h-px"
                                         style={{
                                             top: `${i * 16.66}%`,
+                                            // bottom: `${(i*16.66)}%`,
                                             background: 'white 1px linear-gradient(90deg, transparent, transparent 10px, rgba(255,255,255,0.5) 10px, rgba(255,255,255,0.5) 15px, transparent 15px, transparent 25px)'
                                         }}
                                     />
                                 ))}
-                                
+
                                 {/* Croix aux intersections */}
-                                {[...Array(6)].map((_, i) =>
-                                    [...Array(7)].map((_, j) => (
+                                {[...Array(4)].map((_, i) =>
+                                    [...Array(4)].map((_, j) => (
                                         <div
                                             key={`cross-${i}-${j}`}
                                             className="absolute"
@@ -97,8 +104,8 @@ export default function Hero() {
                             {/* Floating Cards alignées sur la grille */}
                             <div className="absolute inset-0">
                                 {/* Card 1 - Intersection (4, 1) - faCode */}
-                                <div 
-                                    className="absolute w-24 h-24 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl flex items-center justify-center hover:scale-110 transition-all duration-300"
+                                <div
+                                    className="absolute w-24 h-24 bg-white/10 backdrop-blur-sm border border-white rounded-2xl flex items-center justify-center hover:scale-110 transition-all duration-300"
                                     style={{
                                         left: '60%',
                                         top: '16.66%',
@@ -109,8 +116,8 @@ export default function Hero() {
                                 </div>
 
                                 {/* Card 2 - Intersection (5, 2) - faGithub */}
-                                <div 
-                                    className="absolute w-24 h-24 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl flex items-center justify-center hover:scale-110 transition-all duration-300"
+                                <div
+                                    className="absolute w-24 h-24 bg-white/10 backdrop-blur-sm border border-white rounded-2xl flex items-center justify-center hover:scale-110 transition-all duration-300"
                                     style={{
                                         left: '40%',
                                         top: '48.64%',
@@ -120,11 +127,11 @@ export default function Hero() {
                                     <FontAwesomeIcon icon={faGithub} className="text-4xl text-white" />
                                 </div>
 
-                               
+
 
                                 {/* Card 4 - Intersection (4, 5) - faTrophy */}
-                                <div 
-                                    className="absolute w-24 h-24 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl flex items-center justify-center hover:scale-110 transition-all duration-300"
+                                <div
+                                    className="absolute w-24 h-24 bg-white/10 backdrop-blur-sm border border-white rounded-2xl flex items-center justify-center hover:scale-110 transition-all duration-300"
                                     style={{
                                         left: '80%',
                                         top: '48.64%',
@@ -135,8 +142,8 @@ export default function Hero() {
                                 </div>
 
                                 {/* Card 5 - Intersection (2, 4) - faUsers */}
-                                <div 
-                                    className="absolute w-24 h-24 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl flex items-center justify-center hover:scale-110 transition-all duration-300"
+                                <div
+                                    className="absolute w-24 h-24 bg-white/10 backdrop-blur-sm border border-white rounded-2xl flex items-center justify-center hover:scale-110 transition-all duration-300"
                                     style={{
                                         left: '-10%',
                                         top: '48.64%',
