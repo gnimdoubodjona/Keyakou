@@ -8,7 +8,8 @@ export default function LogoutButton() {
   const handleLogout = async () => {
     try {
       await authClient.signOut();
-      router.push("/authentication/login"); // Redirige vers la page d'accueil
+      // router.push("/authentication/login"); // Redirige vers la page d'accueil
+      router.push("/"); // Redirige vers la page d'accueil
     } catch (error) {
       console.error("Erreur lors de la déconnexion:", error);
     }
