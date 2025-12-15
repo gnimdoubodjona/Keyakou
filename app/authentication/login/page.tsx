@@ -19,11 +19,20 @@ export default async function Login() {
   };
 
 
-  const handleGoogleLogin = () => {
-    console.log("Connexion avec Google");
+  // Dans votre component LoginForm
+  const handleGoogleLogin = async () => {
+    try {
+     
+      await authClient.signIn.social({
+        provider: "google",  // Changé de "github" à "google"
+        callbackURL: "/dashboard",
+      });
+    } catch (error) {
+      console.error("Erreur de connexion Google:", error);
+    }
   };
 
-    // Vérifie si l'utilisateur est connecté
+  // Vérifie si l'utilisateur est connecté
   const session = await auth.api.getSession({
     headers: await headers(),
   });

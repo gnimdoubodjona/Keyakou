@@ -12,7 +12,11 @@ export const auth = betterAuth({
     github: {
       clientId: process.env.GITHUB_CLIENT_ID!,
       clientSecret: process.env.GITHUB_CLIENT_SECRET!,
-    }
+    }, 
+    google: { // ✅ AJOUTE CETTE PARTIE
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    },
   },
     // ✅ AJOUTE CETTE PARTIE
   user: {
