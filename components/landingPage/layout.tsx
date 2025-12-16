@@ -12,7 +12,7 @@ export default function Layout({ children } : { children: React.ReactNode}){
                 {/* <Body/> */}
                 <Hero/>
             </main>
-            <Footer/>
+            {/* <Footer/> */}
         </div>
 
     );

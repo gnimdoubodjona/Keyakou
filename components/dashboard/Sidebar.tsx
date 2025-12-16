@@ -12,6 +12,7 @@ import {
   faRobot,
   faChevronDown,
   faPlus,
+  faRocket,
 } from "@fortawesome/free-solid-svg-icons";
 import LogoutButton from "../auth/LogoutButton";
 import Link from "next/link";
@@ -148,28 +149,37 @@ export default function Sidebar({ isOpen }: SidebarProps) {
       }`}
     >
       {/* Logo - CODE EXISTANT */}
-      <div className="h-20 flex items-center justify-center border-b border-white px-4 relative">
+      <div className="h-20 flex items-center justify-center border-b border-white px-4 relative rounded-tl-lg">
         <div className="absolute inset-0 from-blue-500/10 via-purple-500/10 to-pink-500/10"></div>
         {isOpen ? (
           <div className="flex items-center gap-3 relative z-10">
             <div className="relative">
-              <div className="absolute inset-0 bg-white from-blue-500 to-purple-600 rounded-xl blur-lg opacity-50"></div>
-              <div className="relative w-12 h-12 bg-gray from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
-                <span className="text-white font-bold text-xl font-mono">C</span>
+              <div className="absolute inset-0  rounded-xl blur-lg opacity-50"></div>
+              <div className="relative w-12 h-12  rounded-xl flex items-center justify-center shadow-lg">
+                
+              
+                <span className="text-white font-bold text-xl font-mono">
+                  <FontAwesomeIcon icon={faRocket} className="text-white" />
+                </span>
+
+
               </div>
             </div>
             <div>
               <span className="text-2xl font-sans font-bold bg-white from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
                 CodeLLenge
               </span>
-              <p className="text-xs text-gray-500 font-medium">Learn & Challenge</p>
+              {/* <p className="text-xs text-gray-500 font-medium">Learn & Challenge</p> */}
             </div>
           </div>
         ) : (
           <div className="relative">
             <div className="absolute inset-0 bg-white from-blue-500 to-purple-600 rounded-xl blur-lg opacity-50"></div>
             <div className="relative w-12 h-12 bg-white from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
-              <span className="text-black font-bold text-xl">C</span>
+              {/* <span className="text-black font-bold text-xl">C</span> */}
+              <span className="text-black font-bold text-xl font-mono">
+                  <FontAwesomeIcon icon={faRocket} className="text-black" />
+                </span>
             </div>
           </div>
         )}

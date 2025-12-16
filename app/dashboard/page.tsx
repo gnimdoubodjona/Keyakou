@@ -38,7 +38,7 @@ export default function DashboardPage() {
   ];
 
   return (
-    <div className="max-w-7xl mx-auto">
+    <div className="max-w-7xl mx-auto ">
       {/* Header avec gradient */}
       <div className="mb-8 relative">
         <div className="absolute inset-0 bg-black from-blue-500/10 via-purple-500/10 to-pink-500/10 rounded-2xl blur-3xl"></div>
