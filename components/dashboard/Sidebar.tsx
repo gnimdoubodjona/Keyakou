@@ -136,7 +136,8 @@ export default function Sidebar({ isOpen, toggleSidebar }: SidebarProps) {
             onClick={toggleSidebar}
             className="w-full flex justify-center p-2 rounded-lg hover:bg-white/10 text-white transition-all"
           >
-            <FontAwesomeIcon icon={faBars} className="w-5 h-5" />
+            
+            <FontAwesomeIcon icon={faRocket} className="text-white text-xl" />
           </button>
         )}
       </div>

@@ -36,10 +36,9 @@ export default function DashboardLayout({
   };
 
   return (
-    <div className="min-h-screen bg-gray-800 rounded-lg ">
-      <Sidebar isOpen={sidebarOpen} />
-      <DashboardNavbar isOpen={sidebarOpen} toggleSidebar={toggleSidebar} />
-
+    <div className="min-h-screen bg-gray-950 rounded-lg ">
+      <Sidebar isOpen={sidebarOpen} toggleSidebar={toggleSidebar} /> 
+      <DashboardNavbar isOpen={sidebarOpen} />
       <main
         className={`transition-all duration-300 pt-20 ${sidebarOpen ? "ml-72" : "ml-20"
           }`}

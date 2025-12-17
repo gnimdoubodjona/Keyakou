@@ -13,7 +13,7 @@ export default async function Exploration() {
     const soumissions = await getAllSoumissions();
 
     return (
-        <div className="h-screen  bg-black  scrollbar-hide">
+        <div className=" scrollbar-hide">
             {soumissions.map((s, index) => (
                 <div
                     key={s.id}
@@ -94,10 +94,7 @@ export default async function Exploration() {
                                 </div>
                             </button>
                         </div>
-                    </div>
-
-                 
-                   
+                    </div>    
                 </div>
             ))}
 
