@@ -18,21 +18,23 @@ export default async function Exploration() {
                     className="flex items-center justify-center relative px-1 mb-8"
                 >
                     {/* Container principal centré */}
-                    <div className="relative max-w-96 w-full">
+                    <div className="relative max-w-md w-full">
                         {/* Vidéo Card */}
                         {s.demo && (
-                            <div className="relative rounded-2xl overflow-hidden border-2 border-white">
-                                <video
-                                    loop
-                                    muted
-                                    autoPlay
-                                    playsInline
-                                    preload="metadata"
-                                    className="w-full aspect-[9/16] object-cover bg-black"
-                                >
-                                    <source src={s.demo} type="video/mp4" />
-                                    Votre navigateur ne supporte pas la lecture de vidéos.
-                                </video>
+                            <div className="relative rounded-2xl overflow-hidden border-2 border-white p-2 bg-black">
+                                <div className="rounded-xl overflow-hidden">
+                                    <video
+                                        loop
+                                        muted
+                                        autoPlay
+                                        playsInline
+                                        preload="metadata"
+                                        className="w-full aspect-[9/16] object-cover bg-black"
+                                    >
+                                        <source src={s.demo} type="video/mp4" />
+                                        Votre navigateur ne supporte pas la lecture de vidéos.
+                                    </video>
+                                </div>
                             </div>
                         )}
 

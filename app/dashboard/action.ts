@@ -4,9 +4,9 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import db from "@/lib/db";
 import { challenge, participation, soumissions, user } from "@/lib/db/schema";
-import { desc, eq, and } from "drizzle-orm";
+import { desc, eq, and, gt } from "drizzle-orm";
 import { nanoid } from "nanoid";
-import { date, success } from "better-auth";
+// import { date, gt, success } from "better-auth";
 import { stat } from "fs";
 import {
     ChallengeWithCreator,
@@ -18,7 +18,6 @@ import { revalidatePath } from "next/cache";
 import { get } from "http";
 import cloudinary from "@/lib/cloudinary";
 import { Updock } from "next/font/google";
-
 
 
 export async function createChallenge(formData: FormData): Promise<void> {
@@ -70,15 +69,16 @@ export async function createChallenge(formData: FormData): Promise<void> {
     }
 }
 
-export async function getChallenges() {
+export async function getChallenges(showExpired: boolean = false) {
     try {
-        const challenges = await db.select({
+        const now = new Date(); // Définir 'now' ici pour l'utiliser plus bas
+
+        let query = db.select({
             id: challenge.id,
             titre: challenge.titre,
             description: challenge.description,
             dateFin: challenge.dateFin,
             nombrePersonne: challenge.nombrePersonne,
-
             dateDebut: challenge.dateDebut,
             statut: challenge.statut,
             regles: challenge.regles,
@@ -91,8 +91,33 @@ export async function getChallenges() {
         })
             .from(challenge)
             .leftJoin(user, eq(challenge.createdBy, user.id));
-        //.orderBy(desc(challenge.dateDebut));
-        return challenges;
+
+        // Pour voir les défis non expirés uniquement
+        if (!showExpired) {
+            query = query.where(gt(challenge.dateFin, now));
+        }
+
+        const challenges = await query;
+
+        // Fonction pour déterminer le statut
+        function getChallengeStatus(challenge: any, currentDate: Date): string {
+            const dateDebut = new Date(challenge.dateDebut);
+            const dateFin = new Date(challenge.dateFin);
+
+            if (currentDate < dateDebut) {
+                return 'en_attente';
+            } else if (currentDate >= dateDebut && currentDate <= dateFin) {
+                return 'en_cours';
+            } else {
+                return 'termine';
+            }
+        }
+
+        return challenges.map(challenge => {
+            const statut = getChallengeStatus(challenge, now);
+            return { ...challenge, statut };
+        });
+
     } catch (error) {
         console.error("❌ Erreur récupération challenges:", error);
         return [];
@@ -179,6 +204,7 @@ export async function rejoindreChallenge(challengeId: string): Promise<{ success
     }
 }
 
+
 // Server Action pour récupérer les challenges de l'utilisateur
 export async function getUserChallenges() {
     try {
@@ -226,9 +252,9 @@ export async function getUserChallenges() {
     }
 }
 
+
 export async function getChallengeById(id: string) {
     // console.log("🔍 [ACTION] getChallengeById CALLED with id =", id);
-
     try {
         const result = await db.query.challenge.findFirst({
             where: eq(challenge.id, id),
@@ -244,7 +270,6 @@ export async function getChallengeById(id: string) {
     }
 }
 
-// app/dashboard/action.ts
 
 export async function getChallengeWithUserData(
     challengeId: string,
@@ -365,90 +390,7 @@ export async function getChallengeWithUserData(
 }
 
 
-//création d'une soumission pour un challenge
-// export async function soumettreElement(formData: FormData) {
-//     try {
-//         const session = await auth.api.getSession({ headers: await headers() });
-//         if (!session?.user) throw new Error("Utilisateur non authentifié");
 
-//         const participationId = formData.get("participationId") as string;
-//         const challengeId = formData.get("id") as string;
-
-//         const url = formData.get("url") as string | null;
-//         const snippet = formData.get("snippet") as string | null;
-//         const projet_url = formData.get("projet_url") as string | null;
-
-//         const demo = formData.get("video") as File | null;
-//         const capture = formData.get("capture_ecran") as File | null;
-
-//         let demoUrl: string | null = null;
-//         let captureUrl: string | null = null;
-
-//         // console.log("📁 Fichiers reçus :", {
-//         //     demo: demo?.name,
-//         //     capture: capture?.name
-//         // });
-
-//         // Fonction utilitaire d’upload sur Cloudinary
-//         const uploadToCloudinary = (file: File, options: any) => {
-//             return new Promise((resolve, reject) => {
-//                 const uploadStream = cloudinary.uploader.upload_stream(
-//                     options,
-//                     (error, result) => {
-//                         if (error) reject(error);
-//                         else resolve(result);
-//                     }
-//                 );
-
-//                 file.arrayBuffer().then(buffer => {
-//                     uploadStream.end(Buffer.from(buffer));
-//                 });
-//             });
-//         };
-
-//         // Upload vidéo
-//         if (demo && demo.size > 0) {
-//             const result: any = await uploadToCloudinary(demo, {
-//                 resource_type: "video",
-//                 folder: "challenge_assets"
-//             });
-//             demoUrl = result.secure_url;
-//         }
-
-//         // Upload capture d'écran
-//         if (capture && capture.size > 0) {
-//             const result: any = await uploadToCloudinary(capture, {
-//                 folder: "challenge_assets"
-//             });
-//             captureUrl = result.secure_url;
-//         }
-
-//         // Enregistrement DB
-//         const [nouvelleSoumission] = await db.insert(soumissions).values({
-//             id: crypto.randomUUID(),
-//             participationId,
-//             url,
-//             snippet,
-//             projet_url,
-//             demo: demoUrl,
-//             capture_ecran: captureUrl,
-//             statut: "en_attente",
-//             dateSoumission: new Date()
-//         }).returning();
-
-//         // console.log("📌 Soumission enregistrée :", nouvelleSoumission);
-
-//         revalidatePath(`/dashboard/serveur-challenge/${challengeId}`);
-
-//         return { success: true, soumission: nouvelleSoumission };
-
-//     } catch (error) {
-//         console.error("❌ Erreur soumission:", error);
-//         return { success: false, message: "Erreur lors de la soumission" };
-//     }
-// }
-
-// Dans action.ts - GARDEZ UNIQUEMENT soumettreSansFichiers
 export async function soumettreSansFichiers(formData: FormData) {
     try {
         const session = await auth.api.getSession({ headers: await headers() });
@@ -501,16 +443,6 @@ export async function soumettreSansFichiers(formData: FormData) {
 }
 
 
-//afficher les soumissions d'une participation
-export async function getSoumissionParticipation(participationId: string) {
-    try {
-        const soumissionList = await db.select().from(soumissions).where(eq(soumissions.participationId, participationId)).orderBy(desc(soumissions.dateSoumission));
-        return soumissionList;
-    } catch (error) {
-        console.error("❌ Erreur récupération soumission:", error);
-        return [];
-    }
-}
 
 
 // Dans votre action.ts - AJOUTEZ CETTE FONCTION
@@ -551,4 +483,18 @@ export async function getAllSoumissions() {
         return [];
     }
 }
+
+
+
+//afficher les soumissions d'une participation
+export async function getSoumissionParticipation(participationId: string) {
+    try {
+        const soumissionList = await db.select().from(soumissions).where(eq(soumissions.participationId, participationId)).orderBy(desc(soumissions.dateSoumission));
+        return soumissionList;
+    } catch (error) {
+        console.error("❌ Erreur récupération soumission:", error);
+        return [];
+    }
+}
+
 

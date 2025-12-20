@@ -1,4 +1,3 @@
-// app/dashboard/challenges/page.tsx
 import ChallengesList from "@/components/dashboard/ChallengesList";
 import { Suspense } from "react";
 

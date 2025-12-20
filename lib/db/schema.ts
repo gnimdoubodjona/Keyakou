@@ -68,6 +68,7 @@ export const challenge = pgTable("challenge", {
   createdBy: text("createdBy").notNull().references(() => user.id),
 });
 
+
 // schema pour participation au challenge
 export const participation = pgTable("participation", {
   id: text("id").primaryKey(),
@@ -80,6 +81,8 @@ export const participation = pgTable("participation", {
   isActive: boolean("isActive").notNull().default(true), // ⬅️ AJOUTÉ
 }
 )
+
+
 
 export const soumissions = pgTable("soumissions", {
   id: text("id").primaryKey(),
