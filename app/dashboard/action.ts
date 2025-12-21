@@ -124,6 +124,34 @@ export async function getChallenges(showExpired: boolean = false) {
     }
 }
 
+export async function getAllChallenges() {
+    try {
+        const challenges = await db.select({
+            id: challenge.id,
+            titre: challenge.titre,
+            description: challenge.description,
+            dateFin: challenge.dateFin,
+            nombrePersonne: challenge.nombrePersonne,
+
+            dateDebut: challenge.dateDebut,
+            statut: challenge.statut,
+            regles: challenge.regles,
+            pourcentageVote: challenge.pourcentageVote,
+            createdBy: challenge.createdBy,
+            creator: {
+                name: user.name,
+                image: user.image,
+            }
+        })
+            .from(challenge)
+            .leftJoin(user, eq(challenge.createdBy, user.id));
+        //.orderBy(desc(challenge.dateDebut));
+        return challenges;
+    } catch (error) {
+        console.error("❌ Erreur récupération challenges:", error);
+        return [];
+    }
+}
 
 export async function rejoindreChallenge(challengeId: string): Promise<{ success: boolean; message: string }> {
     try {
