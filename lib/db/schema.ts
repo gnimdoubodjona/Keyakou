@@ -1,7 +1,5 @@
 import { pgTable, text, timestamp, boolean, integer } from "drizzle-orm/pg-core";
 
-// import { pgTable, text, integer, timestamp } from "drizzle-orm/pg-core";
-
 
 // Tables pour Better Auth
 export const user = pgTable("user", {  // ⚠️ "user" au singulier
@@ -52,15 +50,26 @@ export const verification = pgTable("verification", {
 });
 
 
+export const regles = pgTable("regles", {
+  id: text("id").primaryKey(),
+  description: text("description").notNull(),
+  challengeId: text("challenge_id").notNull().references(() => challenge.id, { onDelete: "cascade" }),
+});
+
+export const regleSuivi= pgTable("regle_suivi", {
+  id: text("id").primaryKey(),
+  participationId: text("participation_id").notNull().references(() => participation.id, { onDelete: "cascade" }),
+  regleId: text("regle_id").notNull().references(() => regles.id, { onDelete: "cascade" }),
+  statut: boolean("Validé").default(false),
+  validerA: timestamp("validerA").notNull().defaultNow(),
+})
+
 // schema pour challenge
 export const challenge = pgTable("challenge", {
   id: text("id").primaryKey(),
   titre: text("titre").notNull(),
   description: text("description").notNull(),
   nombrePersonne: integer("nombreP").notNull(),
-  regles: text("regles").notNull(),
-  // sujet: text("sujet").notNull(),
-  // ce champ permet de dire si ah à l'issu de ce challenge le pourcentage de vos vote va compter pour tel nombre de pourcent dans le résultat final en fait
   pourcentageVote: integer("pourcentageVote").default(100),
   dateDebut: timestamp("dateDebut").notNull(),
   dateFin: timestamp("dateFin").notNull(),

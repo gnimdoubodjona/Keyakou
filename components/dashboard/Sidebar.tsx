@@ -73,7 +73,7 @@ export default function Sidebar({ isOpen, toggleSidebar }: SidebarProps) {
   const baseMenuItems: MenuItem[] = [
     { icon: faHome, label: "Dashboard", href: "/dashboard", active: true },
     { icon: faTrophy, label: "Challenges", submenu: generateChallengeSubmenu(), active: false },
-    { icon: faChartLine, label: "Progression", href: "/dashboard/progression", active: false },
+    { icon: faChartLine, label: "Classement+", href: "/dashboard/classement", active: false },
   ];
 
   const adminMenuItems: MenuItem[] =
@@ -82,6 +82,7 @@ export default function Sidebar({ isOpen, toggleSidebar }: SidebarProps) {
           icon: faCog,
           label: "Admin",
           submenu: [
+            { label: "Tous les challenges", href: "/dashboard/liste-tout-challenges" },
             { label: "Gérer les utilisateurs", href: "/dashboard/admin/users" },
             { label: "Modérer les challenges", href: "/dashboard/admin/moderate" },
           ],
